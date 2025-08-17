@@ -1,0 +1,77 @@
+<style>
+    .tax-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.9rem;
+        margin-top: -1px; /* remove double border between sections */
+    }
+
+    .tax-table th, 
+    .tax-table td {
+        border: 1px solid black;
+        padding: 6px;
+        text-align: center;
+    }
+
+    .tax-table thead th {
+        background: #f9f9f9;
+    }
+
+    .tax-table tfoot td {
+        font-weight: bold;
+    }
+
+    .tax-amount-words {
+        border: 1px solid black;
+        border-top: none;
+        padding: 8px;
+        font-size: 0.9rem;
+    }
+</style>
+
+<div class="tax-amount-words">
+    Amount Chargeable (in words):  
+    <strong>INR Six Thousand Eight Hundred Seventy Three Only</strong>
+</div>
+
+<table class="tax-table">
+    <thead>
+        <tr>
+            <th rowspan="2">Taxable Value</th>
+            <th colspan="2">Central Tax</th>
+            <th colspan="2">State Tax</th>
+            <th rowspan="2">Total Tax Amount</th>
+        </tr>
+        <tr>
+            <th>Rate</th>
+            <th>Amount</th>
+            <th>Rate</th>
+            <th>Amount</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>4206.97</td>
+            <td>9%</td>
+            <td>378.63</td>
+            <td>9%</td>
+            <td>378.63</td>
+            <td>757.26</td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr>
+            <td>Total: 4206.97</td>
+            <td></td>
+            <td>378.63</td>
+            <td></td>
+            <td>378.63</td>
+            <td>757.26</td>
+        </tr>
+    </tfoot>
+</table>
+
+<div class="tax-amount-words">
+    Tax Amount (in words):  
+    <strong>Four Thousand Nine Hundred Sixty Four Only</strong>
+</div>
