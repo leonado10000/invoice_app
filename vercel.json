@@ -1,13 +1,13 @@
 {
-"builds": [{
-    "src": "invoice_app/wsgi.py",
-    "use": "@vercel/python",
-    "config": { "maxLambdaSize": "15mb", "runtime": "python3.9" }
-}],
-"routes": [
+  "builds": [
     {
-        "src": "/(.*)",
-        "dest": "invoice_app/wsgi.py"
+      "src": "invoice_app/wsgi.py",
+      "use": "@vercel/python",
+      "config": { "maxLambdaSize": "50mb" }
     }
-]
+  ],
+  "routes": [
+    { "src": "/(.*)", "dest": "invoice_app/wsgi.py" }
+  ],
+  "buildCommand": "echo '=== INSTALLING REQUIREMENTS ===' && pip install -r requirements.txt && echo '=== FILES ===' && ls -R"
 }
