@@ -1,13 +1,11 @@
 {
   "builds": [
-    {
-      "src": "invoice_app/wsgi.py",
-      "use": "@vercel/python",
-      "config": { "maxLambdaSize": "50mb" }
-    }
+    { "src": "invoice_app/wsgi.py", "use": "@vercel/python" }
   ],
   "routes": [
     { "src": "/(.*)", "dest": "invoice_app/wsgi.py" }
   ],
-  "buildCommand": "echo '=== INSTALLING REQUIREMENTS ===' && pip install -r requirements.txt && echo '=== FILES ===' && ls -R"
+  "env": {
+    "DJANGO_SETTINGS_MODULE": "invoice_app.settings"
+  }
 }
