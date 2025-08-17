@@ -1,0 +1,93 @@
+<style>
+    .items-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.9rem;
+    }
+
+    /* Header: full border */
+    .items-table th {
+        border: 1px solid black;
+        padding: 6px;
+        text-align: left;
+    }
+
+    /* Normal rows: vertical borders only */
+    .items-table td {
+        border-left: 1px solid black;
+        border-right: 1px solid black;
+        padding: 6px;
+    }
+
+    /* Totals rows: full border top + verticals */
+    .items-table tfoot td {
+        border-left: 1px solid black;
+        border-right: 1px solid black;
+        padding: 6px;
+    }
+
+    /* Each footer row except last has no bottom border */
+    .items-table tfoot tr td {
+        border-top: none;
+        border-bottom: none;
+    }
+
+    /* Last row (Grand Total) closes the box */
+    .items-table tfoot tr:last-child td {
+        border-bottom: 1px solid black;
+        font-weight: bold;
+    }
+
+    .text-right { text-align: right; }
+</style>
+
+<table class="items-table">
+    <thead>
+        <tr>
+            <th>Sl. No.</th>
+            <th>Description of Goods</th>
+            <th>Quantity</th>
+            <th>Rate</th>
+            <th>per</th>
+            <th>Amount</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr><td>1</td><td>Artline pen (DRAWING PEN ) 6p set</td><td>4</td><td>549.15</td><td>—</td><td>2196.60</td></tr>
+        <tr><td>2</td><td>Luxor highlighter</td><td>10</td><td>12.71</td><td>—</td><td>127.10</td></tr>
+        <tr><td>3</td><td>Paper tape</td><td>12</td><td>16.95</td><td>—</td><td>203.40</td></tr>
+        <tr><td>4</td><td>Fevi stick</td><td>30</td><td>19.07</td><td>—</td><td>572.10</td></tr>
+        <tr><td>5</td><td>Glitter sheet pkt</td><td>1</td><td>59.32</td><td>—</td><td>59.32</td></tr>
+        <tr><td>6</td><td>Charcoal pencil</td><td>1</td><td>177.97</td><td>—</td><td>177.97</td></tr>
+        <tr><td>7</td><td>Pastel sheet a4 size</td><td>1</td><td>33.90</td><td>—</td><td>33.90</td></tr>
+        <tr><td>8</td><td>Water colour cake camlin artist grade</td><td>1</td><td>567.80</td><td>—</td><td>567.80</td></tr>
+        <tr><td>9</td><td>Double tape 1’’</td><td>1</td><td>56.78</td><td>—</td><td>56.78</td></tr>
+        <tr><td>10</td><td>Glaze paper</td><td>50</td><td>4.24</td><td>—</td><td>212.00</td></tr>
+    </tbody>
+    <tfoot>
+        <tr>
+            <td></td>
+            <td class="text-right"><strong>CGST</strong></td>
+            <td></td><td></td><td></td>
+            <td>378.63</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td class="text-right"><strong>SGST</strong></td>
+            <td></td><td></td><td></td>
+            <td>378.63</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td class="text-right"><strong>Round Off</strong></td>
+            <td></td><td></td><td></td>
+            <td>0.22</td>
+        </tr>
+        <tr style="border-top: 1px solid black;">
+            <td></td>
+            <td class="text-right"><strong>Total</strong></td>
+            <td></td><td></td><td></td>
+            <td><strong>4964.00</strong></td>
+        </tr>
+    </tfoot>
+</table>

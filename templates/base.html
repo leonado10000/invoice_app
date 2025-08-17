@@ -1,0 +1,103 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Invoice{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'invoices.css' %}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f0f0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Invoice Container like PDF */
+        #invoice-container {
+            background: white;
+            width: 800px;         /* fixed paper width */
+            min-height: 1123px;   /* A4 ratio approx */
+            margin: 2rem 0;
+            padding: 20px 30px;
+            border: 2px solid #000;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Sections inside invoice use grids */
+        .section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .invoice-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .invoice-table th, .invoice-table td {
+            border: 1px solid black;
+            padding: 6px;
+            font-size: 0.9rem;
+        }
+        .text-right { text-align: right; }
+
+        /* Website Footer */
+        .footer {
+            background-color: #1e1e1e;
+            color: #ccc;
+            padding: 1.5rem 2rem;
+            font-size: 0.9rem;
+            border-top: 1px solid #333;
+            width: 100%;
+        }
+
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            text-align: center;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .footer-links a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: #fff;
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Invoice "Page" -->
+    <main id="invoice-container">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Website Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2025 Rahul Jangra. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Use</a>
+                <a href="https://rahul-jangra-leonado10000.vercel.app">Contact</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
