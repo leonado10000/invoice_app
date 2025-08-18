@@ -64,30 +64,78 @@
         <tr><td>9</td><td>Double tape 1’’</td><td>1</td><td>56.78</td><td>—</td><td>56.78</td></tr>
         <tr><td>10</td><td>Glaze paper</td><td>50</td><td>4.24</td><td>—</td><td>212.00</td></tr>
     </tbody>
-    <tfoot>
+
+    <style>
+        .tax-totals tr td input {
+            text-align: right;
+            outline: none;
+            border: 0px;
+            font-size: 0.9rem;
+            max-width: 100px;
+        }
+    </style>
+    <tfoot class="tax-totals">
+        <tr>
+            <td></td>
+            <td class="text-right">Total</td>
+            <td></td><td></td><td></td>
+            <td><input onchange="total_change()" id="total-without-tax" type="number" value="4206.97" ></td>
+        </tr>
         <tr>
             <td></td>
             <td class="text-right"><strong>CGST</strong></td>
             <td></td><td></td><td></td>
-            <td>378.63</td>
+            <td><input id="cgst-total" type="number" value="378.63" readonly></td>
         </tr>
         <tr>
             <td></td>
             <td class="text-right"><strong>SGST</strong></td>
             <td></td><td></td><td></td>
-            <td>378.63</td>
+            <td><input id="sgst-total" type="number" value="378.63" readonly></td>
         </tr>
         <tr>
             <td></td>
             <td class="text-right"><strong>Round Off</strong></td>
             <td></td><td></td><td></td>
-            <td>0.22</td>
+            <td><input id="total-rf" type="number" value="0.22" readonly></td>
         </tr>
         <tr style="border-top: 1px solid black;">
             <td></td>
             <td class="text-right"><strong>Total</strong></td>
             <td></td><td></td><td></td>
-            <td><strong>4964.00</strong></td>
+            <td><input id="total-with-tax" type="number" value="4964.22" style="font-weight: 600;" readonly></td>
         </tr>
     </tfoot>
 </table>
+
+<script>
+    function total_change_trigger() {
+        document.getElementById("total-without-tax").value = 100.0;
+        total_change();
+    }
+
+    function total_change() {
+        let x = parseFloat(document.getElementById("total-without-tax").value) * 9 / 100;
+        if (isNaN(x)) {
+            x = 0.00;
+        }
+        document.getElementById("cgst-total").value = x.toFixed(2);
+        document.getElementById("sgst-total").value = x.toFixed(2);
+        total_with_tax_change();
+    }
+
+    function total_with_tax_change() {
+        const getValue = (id) => parseFloat(document.getElementById(id).value) || 0;
+
+        const total_wo_tax = getValue("total-without-tax");
+        const cgst_total = getValue("cgst-total");
+        const sgst_total = getValue("sgst-total");
+
+        let total = total_wo_tax + cgst_total + sgst_total;
+        if (isNaN(total)) total = 0.00;
+        let roundOff = total - Math.floor(total);
+        document.getElementById("total-rf").value = roundOff.toFixed(2);
+        document.getElementById("total-with-tax").value = Math.floor(total).toFixed(2);
+    }
+
+</script>

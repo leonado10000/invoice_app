@@ -1,21 +1,14 @@
 {% extends "base.html" %}
+{% block title %}Invoice{% endblock %}
+{% block page_title %}Invoice #{{ invoice.number }}{% endblock %}
+
 {% block content %}
-
-    <!-- Company and Invoice Info -->
+<div class="invoice-paper">
+    <!-- Your structured invoice sections here -->
     {% include "invoice/parts/company_details.html" %}
-
-    <!-- Buyer Details -->
     {% include "invoice/parts/buyer_details.html" %}
-
-    <!-- Items Table -->
     {% include "invoice/parts/items_table.html" %}
-
-    <!-- Tax Table -->
     {% include "invoice/parts/tax_table.html" %}
-
-    <!-- Footer -->
     {% include "invoice/parts/invoice_footer.html" %}
-
-
+</div>
 {% endblock %}
-    

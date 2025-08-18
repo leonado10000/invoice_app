@@ -17,3 +17,9 @@ def invoice_view(request):
 
 #     HTML(string=html).write_pdf(response)
 #     return response
+
+def invoice_dashboard(request):
+    invoices = [{"number":1,"date":"27-09-2023","buyer":"John Doe","total_amount":4206.97,"status":"paid"}]
+    return render(request, 'invoice/dashboard.html', {
+        "invoices":invoices
+    })
