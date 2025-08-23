@@ -173,10 +173,7 @@ def invoice_create_or_edit(request):
 #     else:
 #         return HttpResponse(html)
     
-# views.py
-from django.http import JsonResponse
-
-def test_pdf_lib(request):
+def test_pdf_lib(request, pk):
     try:
         import xhtml2pdf
         available = True
