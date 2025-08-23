@@ -208,7 +208,7 @@ def invoice_pdf(request, pk):
     }
 
     # Render HTML
-    html = render_to_string('invoice/main.html', context)
+    html = render_to_string('invoice/main.html', context, request=request)
 
     # Generate PDF
     response = HttpResponse(content_type='application/pdf')
