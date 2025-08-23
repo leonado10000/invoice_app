@@ -161,17 +161,17 @@ def invoice_create_or_edit(request):
     return dashboard(request)
 
 
-@login_required(login_url="/login")
-def invoice_pdf(request, pk):
-    invoice = get_object_or_404(Invoice, pk=pk, owner=request.user)
-    html = render_to_string('invoice/main.html', {'invoice': invoice, 'pdf': True})
-    if WEASYPRINT_AVAILABLE:
-        pdf = HTML(string=html).write_pdf()
-        response = HttpResponse(pdf, content_type='application/pdf')
-        response['Content-Disposition'] = f'attachment; filename=invoice_{invoice.number}.pdf'
-        return response
-    else:
-        return HttpResponse(html)
+# @login_required(login_url="/login")
+# def invoice_pdf(request, pk):
+#     invoice = get_object_or_404(Invoice, pk=pk, owner=request.user)
+#     html = render_to_string('invoice/main.html', {'invoice': invoice, 'pdf': True})
+#     if WEASYPRINT_AVAILABLE:
+#         pdf = HTML(string=html).write_pdf()
+#         response = HttpResponse(pdf, content_type='application/pdf')
+#         response['Content-Disposition'] = f'attachment; filename=invoice_{invoice.number}.pdf'
+#         return response
+#     else:
+#         return HttpResponse(html)
     
 # views.py
 from django.http import JsonResponse
