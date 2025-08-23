@@ -1,0 +1,25 @@
+<head>
+    <title>By Rahul Jangra</title>
+</head>
+
+<style>
+    body {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+    .demo-invoice-paper {
+        width: 210mm;
+    }
+</style>
+
+<body>
+<div></div>
+<div class="demo-invoice-paper">
+    <!-- Your structured invoice sections here -->
+    {% include "demo/parts/company_details.html" %}
+    {% include "demo/parts/buyer_details.html" %}
+    {% include "demo/parts/items_table.html" %}
+    {% include "demo/parts/tax_table.html" %}
+    {% include "demo/parts/invoice_footer.html" %}
+</div>
+</body>

@@ -5,7 +5,7 @@
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="fw-bold">📑 Invoice Dashboard</h2>
-    <a href="" class="btn btn-primary shadow">
+    <a href="{% url 'pos' 'new' %}" class="btn btn-primary shadow">
         ➕ Create Invoice
     </a>
 </div>
@@ -18,9 +18,10 @@
     <div class="col-md-3 mb-2">
         <select class="form-select" id="filterStatus">
             <option value="">All Status</option>
+            <option value="draft">draft</option>
             <option value="paid">Paid</option>
-            <option value="unpaid">Unpaid</option>
-            <option value="overdue">Overdue</option>
+            <option value="sent">Sent</option>
+            <option value="cancelled">Cancelled</option>
         </select>
     </div>
 </div>
@@ -45,21 +46,23 @@
                     <tr>
                         <td>#{{ invoice.number }}</td>
                         <td>{{ invoice.date|date:"d M Y" }}</td>
-                        <td>{{ invoice.buyer }}</td>
-                        <td>₹ {{ invoice.total_amount }}</td>
+                        <td>{{ invoice.customer }}</td>
+                        <td>₹ {{ invoice.total }}</td>
                         <td>
-                            {% if invoice.status == "paid" %}
+                            {% if invoice.status == "DRAFT" or invoice.status == "draft" %}
+                                <span class="badge bg-info">Draft</span>
+                            {% elif invoice.status == "PAID" %}
                                 <span class="badge bg-success">Paid</span>
-                            {% elif invoice.status == "overdue" %}
-                                <span class="badge bg-danger">Overdue</span>
+                            {% elif invoice.status == "SENT" %}
+                                <span class="badge bg-primary">Sent</span>
                             {% else %}
-                                <span class="badge bg-warning text-dark">Unpaid</span>
+                                <span class="badge bg-danger text-dark">Cancelled</span>
                             {% endif %}
                         </td>
                         <td class="text-center">
-                            <a href="" class="btn btn-sm btn-outline-primary">View</a>
-                            <a href="" class="btn btn-sm btn-outline-success">Download</a>
-                            <a href="" class="btn btn-sm btn-outline-warning">Edit</a>
+                            <a href="{% url 'detail' invoice.id %}" class="btn btn-sm btn-outline-primary">View</a>
+                            <a href="{% url 'invoice_pdf' invoice.id %}" class="btn btn-sm btn-outline-success">Download</a>
+                            <a href="{% url 'pos' invoice.id %}" class="btn btn-sm btn-outline-warning">Edit</a>
                         </td>
                     </tr>
                     {% empty %}

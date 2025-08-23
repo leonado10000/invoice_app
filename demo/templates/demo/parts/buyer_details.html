@@ -1,0 +1,60 @@
+<style>
+    .invoice-section {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        border: 1px solid black;
+        border-bottom: none; /* so next section touches it */
+    }
+
+    /* Last section should close the box */
+    .invoice-section.last {
+        border-bottom: 1px solid black;
+    }
+
+    .invoice-section .left,
+    .invoice-section .right {
+        border-right: 1px solid black;
+    }
+
+    .invoice-section .right {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .invoice-section .right div,
+    .invoice-section .left div {
+        border: 1px solid black;
+        border-left: none;
+        border-top: none;
+        padding: 6px;
+        font-size: 0.9rem;
+    }
+
+    .invoice-section input {
+        width: 100%;
+        border: none;
+        outline: none;
+        font-size: 0.9rem;
+    }
+
+    .invoice-section strong {
+        display: block;
+        margin-bottom: 2px;
+    }
+</style>
+<div class="invoice-section last">
+    <!-- LEFT -->
+    <div class="left">
+        <div><strong>Buyer</strong><input type="text" value="PRINCIPAL KENDRIYA VIDYALYA NO. 2, SIRSA"></div>
+        <div><strong>State Name</strong><input type="text" value="Haryana, Code: 06"></div>
+        <div><strong>Place of Supply</strong><input type="text" value="Haryana"></div>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="right">
+        <div><strong>Despatch Document No.</strong><input type="text" value="<Enter Value>"></div>
+        <div><strong>Delivery Note Date</strong><input type="text" value="<Enter Value>"></div>
+        <div><strong>Despatched through</strong><input type="text" value="<Enter Value>"></div>
+        <div><strong>Destination</strong><input type="text" value="<Enter Value>"></div>
+    </div>
+</div>

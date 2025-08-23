@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Item{% endblock %}
+{% block page_title %}Item {{ item.code }}{% endblock %}
+{% block content %}
+<div class="card">
+  <div class="card-body">
+    <h4>{{ item.name }} <small class="text-muted">({{ item.code }})</small></h4>
+    <p>{{ item.description }}</p>
+    <dl class="row">
+      <dt class="col-sm-3">GST Rate</dt><dd class="col-sm-9">{{ item.gst_rate }}%</dd>
+      <dt class="col-sm-3">Rate (incl.)</dt><dd class="col-sm-9">₹ {{ item.rate_incl }}</dd>
+      <dt class="col-sm-3">Stock</dt><dd class="col-sm-9">{{ item.stock_quantity }} {{ item.unit }}</dd>
+    </dl>
+    <a href="{% url 'inventory:edit' item.pk %}" class="btn btn-sm btn-outline-warning">Edit</a>
+    <a href="{% url 'inventory:list' %}" class="btn btn-sm btn-outline-secondary">Back</a>
+  </div>
+</div>
+{% endblock %}

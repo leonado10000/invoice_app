@@ -1,0 +1,59 @@
+<style>
+    .invoice-section {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        border: 1px solid black;
+    }
+
+    .invoice-section .left,
+    .invoice-section .right {
+        width: 100%;
+        border: 1px solid black;
+        display: flex;          /* makes children stretch */
+        flex-direction: column; /* stack inside vertically */
+    }
+
+
+    .invoice-section .right {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .invoice-section .right div,
+    .invoice-section .left div {
+        border: 1px solid black;
+        font-size: 0.9rem;
+    }
+
+    .invoice-section input {
+        width: 100%;
+        outline: none;
+        font-size: 0.9rem;
+    }
+
+    .invoice-section strong {
+        display: block;
+    }
+</style>
+<div class="invoice-section">
+    <!-- LEFT -->
+    <div class="left">
+        <div>
+            <h3 style="margin:0;">OM ENTERPRISES</h3>
+            SHOP NO. SRS/B11/5810/1 NEAR <br>
+            JAGDEV SAW MILL KANGANPUR <br>
+            ROAD, SIRSA GSTIN/UIN: <br>  06HLHPK0832H1Z6 <br>
+            State Name: Haryana, Code: 06
+        </div>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="right">
+        <div><strong>Invoice No.</strong><input type="text" value="18"></div>
+        <div><strong>Dated</strong><input type="date" value="2025-08-18"></div>
+        <div><strong>Delivery Note</strong><input type="text" value="<Enter Value>"></div>
+        <div><strong>Supplier's Ref.</strong><input type="text" value="<Enter Value>"></div>
+        <div><strong>Other Reference(s)</strong><input type="text" value="<Enter Value>"></div>
+        <div><strong>Optional</strong><input type="text" value="<Enter Value>"></div>
+    </div>
+</div>

@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}{% if is_create %}Add Item{% else %}Edit Item{% endif %}{% endblock %}
+{% block page_title %}{% if is_create %}Add Item{% else %}Edit Item{% endif %}{% endblock %}
+
+{% block content %}
+<div class="card">
+  <div class="card-body">
+    <form method="post">
+      {% csrf_token %}
+      <div class="row g-3">
+        <div class="col-md-3">
+          {{ form.code.label_tag }} {{ form.code }}
+        </div>
+        <div class="col-md-6">
+          {{ form.name.label_tag }} {{ form.name }}
+        </div>
+        <div class="col-md-3">
+          {{ form.unit.label_tag }} {{ form.unit }}
+        </div>
+        <div class="col-md-3">
+          {{ form.gst_rate.label_tag }} {{ form.gst_rate }}
+        </div>
+        <div class="col-md-3">
+          {{ form.rate_incl.label_tag }} {{ form.rate_incl }}
+        </div>
+        <div class="col-md-3">
+          {{ form.stock_quantity.label_tag }} {{ form.stock_quantity }}
+        </div>
+        <div class="col-md-3">
+          {{ form.reorder_level.label_tag }} {{ form.reorder_level }}
+        </div>
+        <div class="col-12">
+          {{ form.description.label_tag }} {{ form.description }}
+        </div>
+        <div class="col-12 d-flex gap-2">
+          <button class="btn btn-primary" type="submit">Save</button>
+          <a href="{% url 'inventory:list' %}" class="btn btn-outline-secondary">Cancel</a>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

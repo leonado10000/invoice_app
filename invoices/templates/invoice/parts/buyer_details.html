@@ -45,8 +45,8 @@
 <div class="invoice-section last">
     <!-- LEFT -->
     <div class="left">
-        <div><strong>Buyer</strong><input type="text" value="PRINCIPAL KENDRIYA VIDYALYA NO. 2, SIRSA"></div>
-        <div><strong>State Name</strong><input type="text" value="Haryana, Code: 06"></div>
+        <div><strong>Buyer</strong><input type="text" value="{{ invoice.customer.name }}"></div>
+        <div><strong>State Name</strong><input type="text" value="{{ invoice.customer.state }}, Code: {{ invoice.customer.state_code }}"></div>
         <div><strong>Place of Supply</strong><input type="text" value="Haryana"></div>
     </div>
 

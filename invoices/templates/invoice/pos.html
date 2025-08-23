@@ -1,0 +1,567 @@
+{% extends "base.html" %}
+{% block title %}POS — Create Invoice{% endblock %}
+
+{% block content %}
+<!-- BUYER & HEADER DETAILS -->
+<div class="card shadow-sm mb-3">
+  <div class="card-header bg-dark text-white d-flex align-items-center justify-content-between">
+    <h6 class="mb-0">Buyer & Invoice Details</h6>
+    <span class="small opacity-75">Fill all required fields</span>
+  </div>
+
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-sm align-middle mb-0">
+        <tbody>
+          <tr>
+            <th style="width: 18%">
+              <label for="pos-inv-number" class="mb-0 small text-muted">Invoice No.</label>
+            </th>
+            <td style="width: 32%">
+              <input type="hidden" id="invoice_pk" value="{{invoice_pk}}">
+              <input type="text" class="form-control form-control-sm" id="pos-invoice-number" name="invoice_number" autocomplete="off" value="{{ invoice.number|default_if_none:'' }}">
+            </td>
+
+            <th style="width: 18%">
+              <label for="pos-inv-date" class="mb-0 small text-muted">Date</label>
+            </th>
+            <td style="width: 32%">
+              <input type="date" class="form-control form-control-sm" id="pos-invoice-date" name="invoice_date" value="{{ invoice.date|date:'Y-m-d' }}">
+            </td>
+          </tr>
+
+          <tr>
+            <th>
+              <label for="pos-buyer" class="mb-0 small text-muted">Buyer</label>
+            </th>
+            <td colspan="3">
+              <select id="pos-buyer" name="buyer" class="form-select form-select-sm">
+                {% if not invoice.customer %}
+                  <option value="" selected disabled>-- Select Buyer --</option>
+                {% endif %}
+                {% for buyer in buyers %}
+                  {% if invoice.customer == buyer %}
+                    <option value="{{ buyer.name }}" selected>{{ buyer.name }}</option>
+                  {% else %}
+                    <option value="{{ buyer.name }}">{{ buyer.name }}</option>
+                  {% endif %}
+                {% endfor %}
+              </select>
+            </td>
+          </tr>
+
+          <tr>
+            <th>
+              <label for="pos-delivery-note" class="mb-0 small text-muted">Delivery Note</label>
+            </th>
+            <td>
+              <input type="text" class="form-control form-control-sm" id="pos-delivery-note" name="delivery_note" autocomplete="off" value="{{ invoice.notes|default_if_none:'' }}" >
+            </td>
+
+            <th>
+              <label for="pos-supplier-ref" class="mb-0 small text-muted">Supplier Ref</label>
+            </th>
+            <td>
+              <input type="text" class="form-control form-control-sm" id="pos-supplier-ref" name="supplier_ref" autocomplete="off" value="{{ invoice.supplier_ref|default_if_none:'' }}" >
+            </td>
+          </tr>
+
+          <tr>
+            <th>
+              <label for="pos-other-ref" class="mb-0 small text-muted">Other Reference</label>
+            </th>
+            <td>
+              <input type="text" class="form-control form-control-sm" id="pos-other-ref" name="other_ref" autocomplete="off" value="{{ invoice.other_ref|default_if_none:'' }}" >
+            </td>
+
+            <th>
+              <label for="pos-despatch-doc-no" class="mb-0 small text-muted">Despatch Document No.</label>
+            </th>
+            <td>
+              <input type="text" class="form-control form-control-sm" id="pos-despatch-doc-no" name="despatch_doc_no" autocomplete="off" value="{{ invoice.despatch_doc_no|default_if_none:'' }}" >
+            </td>
+          </tr>
+
+          <tr>
+            <th>
+              <label for="pos-delivery-note-date" class="mb-0 small text-muted">Delivery Note Date</label>
+            </th>
+            <td>
+              <input type="date" class="form-control form-control-sm" id="pos-delivery-note-date" name="delivery_note_date" value="{{ invoice.delivery_note_date|date:'Y-m-d' }}">
+            </td>
+
+            <th>
+              <label for="pos-despatched-through" class="mb-0 small text-muted">Despatched Through</label>
+            </th>
+            <td>
+              <input type="text" class="form-control form-control-sm" id="pos-despatched-through" name="despatched_through" autocomplete="off" value="{{ invoice.despatched_through|default_if_none:'' }}">
+            </td>
+          </tr>
+
+          <tr>
+            <th>
+              <label for="pos-destination-other" class="mb-0 small text-muted">Destination (other than buyer)</label>
+            </th>
+            <td colspan="1">
+              <input type="text" class="form-control form-control-sm" id="pos-destination-other" name="destination_other" autocomplete="off" value="{{ invoice.destination_other|default_if_none:'' }}">
+            </td>
+
+            <th>
+              <label for="pos-destination-other" class="mb-0 small text-muted">Status</label>
+            </th>
+            <td colspan="1">
+              <select name="status" id="pos-status">
+                {% for status in status_list %}
+                  {% if status.1 == invoice.status %}
+                    <option value="{{status.0}}" selected>{{status.1}}</option>
+                  {% else %}
+                    <option value="{{status.0}}">{{status.1}}</option>
+                  {% endif %}
+                {% endfor %}
+              </select>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+<div class="container-fluid py-3" id="pos-root">
+  <div class="row g-3">
+
+    <!-- LEFT: SEARCH + RESULTS -->
+    <div class="col-lg-7" id="pos-left">
+      <div class="card shadow-sm">
+        <div class="card-header bg-dark text-white d-flex align-items-center justify-content-between">
+          <h5 class="mb-0">Search Items</h5>
+          <div class="d-flex align-items-center gap-2">
+            <span class="small opacity-75">Search by name or code</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="row g-2 align-items-center">
+            <div class="col-9">
+              <input
+                id="pos-search-input"
+                class="form-control"
+                type="text"
+                placeholder="🔎 Type to search (e.g., 'A001' or 'pen')"
+                autocomplete="off"
+              />
+            </div>
+            <div class="col-3">
+              <select id="pos-search-gst-filter" class="form-select">
+                <option value="" selected>All GST</option>
+                <option value="12">12%</option>
+                <option value="16">16%</option>
+                <option value="18">18%</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="mt-3 border rounded" style="max-height: 58vh; overflow-y: auto;">
+            <table class="table table-sm align-middle mb-0" id="pos-results-table">
+              <thead class="table-light sticky-top">
+                <tr>
+                  <th style="width: 12%">Code</th>
+                  <th style="width: 44%">Name</th>
+                  <th class="text-end" style="width: 12%">GST%</th>
+                  <th class="text-end" style="width: 18%">Rate (incl.)</th>
+                  <th class="text-end" style="width: 14%">Add</th>
+                </tr>
+              </thead>
+              <tbody id="pos-results-tbody">
+                <!-- JS will render results here -->
+              </tbody>
+            </table>
+          </div>
+
+          <div class="d-flex gap-2 mt-3">
+            <button class="btn btn-outline-secondary btn-sm" id="pos-clear-search">Clear Search</button>
+            <button class="btn btn-outline-dark btn-sm" id="pos-refresh-items">Refresh Items</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: CART / CURRENT INVOICE -->
+    <div class="col-lg-5" id="pos-right">
+      <div class="card shadow-sm">
+        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">Current Invoice</h5>
+          <span class="badge bg-secondary" id="pos-cart-count">0 items</span>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive" style="max-height: 52vh; overflow-y: auto;">
+            <table class="table table-sm align-middle mb-0" id="pos-cart-table">
+              <thead class="table-light sticky-top">
+                <tr>
+                  <th style="width: 13%">Code</th>
+                  <th style="width: 39%">Name</th>
+                  <th class="text-end" style="width: 10%">GST%</th>
+                  <th class="text-end" style="width: 12%">Rate (incl.)</th>
+                  <th class="text-end" style="width: 14%">Qty</th>
+                  <th class="text-end" style="width: 12%">Amount</th>
+                  <th class="text-center" style="width: 10%">✖</th>
+                </tr>
+              </thead>
+              <tbody id="pos-cart-tbody">
+                <tr data-code="A001">
+                  <td id="cart-code-A001" class="fw-semibold">A001</td>
+                  <td id="cart-name-A001">Artline pen (DRAWING PEN) 6p set</td>
+                  <td id="cart-gst-A001" class="text-end">18%</td>
+                  <td id="cart-rate-A001" class="text-end">549.15</td>
+                  <td class="text-end">
+                    <input id="cart-qty-A001" type="number" min="0" class="form-control form-control-sm text-end" value="1" style="width:90px; margin-left:auto;">
+                  </td>
+                  <td id="cart-amount-A001" class="text-end">549.15</td>
+                  <td class="text-center">
+                    <button class="btn btn-sm btn-outline-danger" id="cart-remove-A001" title="Remove">
+                      ✖
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="border-top p-3">
+            <div class="d-flex justify-content-between">
+              <span>Subtotal (Taxable)</span>
+              <strong id="pos-subtotal">₹ 0.00</strong>
+            </div>
+            <div class="d-flex justify-content-between">
+              <span>CGST</span>
+              <strong id="pos-cgst">₹ 0.00</strong>
+            </div>
+            <div class="d-flex justify-content-between">
+              <span>SGST</span>
+              <strong id="pos-sgst">₹ 0.00</strong>
+            </div>
+            <div class="d-flex justify-content-between">
+              <span>Round Off</span>
+              <strong id="pos-roundoff">₹ 0.00</strong>
+            </div>
+            <hr class="my-2">
+            <div class="d-flex justify-content-between fs-5">
+              <span><strong>Grand Total</strong></span>
+              <strong id="pos-grandtotal">₹ 0.00</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-footer d-flex flex-wrap gap-2 justify-content-between">
+          <div class="d-flex gap-2">
+            <button class="btn btn-outline-danger" id="pos-clear-cart">Clear Cart</button>
+            <button class="btn btn-outline-secondary" id="pos-save-draft">Save Draft</button>
+          </div>
+          <div class="d-flex gap-2">
+            <button class="btn btn-primary" id="pos-generate-invoice">Generate Invoice</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+{{ data|json_script:"items" }}
+{{ cart|json_script:"cart" }}
+
+<script>
+/* ===========================
+   POS — Frontend Logic (Vanilla JS)
+   - Replace mock DATA with Django fetch later.
+   - All IDs are stable for wiring to views.
+   =========================== */
+let cart = JSON.parse(document.getElementById("cart").textContent);// [{id, code, name, gst_rate, rate_incl, unit, qty}]
+let items = JSON.parse(document.getElementById("items").textContent);
+
+/** ---------- Mock Data (replace via API) ---------- **/
+let POS_ITEMS = [];
+items.forEach((i) => {
+  i["gst_rate"] = parseFloat(i["gst_rate"]);
+  i["rate_incl"] = parseFloat(i["rate_incl"]);
+  POS_ITEMS.push(i);
+});
+cart.forEach((item) => {
+  item["gst_rate"] = parseFloat(item["gst_rate"]);
+  item["rate_incl"] = parseFloat(item["rate_incl"]);
+  item["qty"] = parseFloat(item["qty"]);
+});
+
+/** ---------- DOM ---------- **/
+const el = (id) => document.getElementById(id);
+const resultsTbody = el("pos-results-tbody");
+const searchInput  = el("pos-search-input");
+const gstFilter    = el("pos-search-gst-filter");
+
+const cartTbody    = el("pos-cart-tbody");
+const cartCount    = el("pos-cart-count");
+
+const subtotalEl   = el("pos-subtotal");
+const cgstEl       = el("pos-cgst");
+const sgstEl       = el("pos-sgst");
+const roundoffEl   = el("pos-roundoff");
+const grandEl      = el("pos-grandtotal");
+
+const clearSearchBtn = el("pos-clear-search");
+const refreshBtn     = el("pos-refresh-items");
+const clearCartBtn   = el("pos-clear-cart");
+const saveDraftBtn   = el("pos-save-draft");
+const generateBtn    = el("pos-generate-invoice");
+
+/** ---------- Utils ---------- **/
+const fmt = (n) => "₹ " + (parseFloat(n || 0).toFixed(2));
+const toNumber = (x) => isNaN(parseFloat(x)) ? 0 : parseFloat(x);
+
+/** ---------- Render: Results ---------- **/
+function renderResults(items) {
+  resultsTbody.innerHTML = "";
+  if (!items.length) {
+    resultsTbody.innerHTML = `<tr><td colspan="5" class="text-center text-muted py-3">No items found</td></tr>`;
+    return;
+  }
+
+  items.forEach((it) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td class="fw-semibold">${it.code}</td>
+      <td>${it.name}</td>
+      <td class="text-end">${it.gst_rate}%</td>
+      <td class="text-end">${it.rate_incl.toFixed(2)}</td>
+      <td class="text-end">
+        <div class="input-group input-group-sm justify-content-end" style="max-width: 140px; margin-left:auto;">
+          <input type="number" class="form-control text-end" min="1" value="1" id="pos-qty-input-${it.id}">
+          <button class="btn btn-dark" id="pos-add-btn-${it.id}">Add</button>
+        </div>
+      </td>
+    `;
+    resultsTbody.appendChild(tr);
+
+    // Add handler
+    el(`pos-add-btn-${it.id}`).addEventListener("click", () => {
+      const qty = Math.max(1, parseInt(el(`pos-qty-input-${it.id}`).value || "1", 10));
+      addToCart(it, qty);
+    });
+  });
+}
+
+/** ---------- Search Logic (live) ---------- **/
+function filterItems() {
+  const term = (searchInput.value || "").toLowerCase();
+  const gst = gstFilter.value;
+  const filtered = POS_ITEMS.filter(it => {
+    const matchesText = it.name.toLowerCase().includes(term) || it.code.toLowerCase().includes(term);
+    const matchesGST  = gst === "" ? true : (String(it.gst_rate) === gst);
+    return matchesText && matchesGST;
+  });
+  renderResults(filtered);
+}
+
+// debounce typing for snappy UX
+let searchTimer = null;
+searchInput.addEventListener("input", () => {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(filterItems, 120);
+});
+gstFilter.addEventListener("change", filterItems);
+clearSearchBtn.addEventListener("click", () => {
+  searchInput.value = "";
+  gstFilter.value = "";
+  filterItems();
+});
+refreshBtn.addEventListener("click", () => {
+  // hook: re-fetch items from API later
+  filterItems();
+});
+
+/** ---------- Cart Ops ---------- **/
+function addToCart(item, qty) {
+  // merge by unique item code (or id)
+  const idx = cart.findIndex(x => x.code === item.code);
+  if (idx > -1) {
+    cart[idx].qty += qty;
+  } else {
+    cart.push({
+      id: item.id,
+      code: item.code,
+      name: item.name,
+      gst_rate: item.gst_rate,
+      rate_incl: item.rate_incl,
+      unit: item.unit,
+      qty: qty
+    });
+  }
+  renderCart();
+}
+
+function removeFromCart(code) {
+  cart = cart.filter(x => x.code !== code);
+  renderCart();
+}
+
+function updateQty(code, qty) {
+  const idx = cart.findIndex(x => x.code === code);
+  if (idx > -1) {
+    cart[idx].qty = Math.max(0, qty);
+    if (cart[idx].qty === 0) {
+      cart.splice(idx, 1);
+    }
+    renderCart();
+    persistCart();
+  }
+}
+
+/** ---------- Tax Math (inclusive rates) ----------
+ For each line:
+   unit_price_incl = P
+   GST% = g
+   taxable = P / (1 + g/100)
+   tax = P - taxable
+   CGST = SGST = tax / 2
+ Line amount incl = qty * P
+ Totals: sum of taxable, CGST, SGST, total_incl
+ Round Off: total_incl - floor(total_incl)
+ Grand Total: floor(total_incl)
+-------------------------------------------------- */
+function computeTotals() {
+  let taxable = 0, cgst = 0, sgst = 0, totalIncl = 0;
+
+  cart.forEach(line => {
+    const P = toNumber(line.rate_incl);
+    const g = toNumber(line.gst_rate);
+    const q = toNumber(line.qty);
+
+    const taxableUnit = P / (1 + (g / 100));
+    const taxUnit = P - taxableUnit;
+    const cgstUnit = taxUnit / 2;
+    const sgstUnit = taxUnit / 2;
+
+    taxable += taxableUnit * q;
+    cgst += cgstUnit * q;
+    sgst += sgstUnit * q;
+    totalIncl += P * q;
+  });
+
+  const roundoff = totalIncl - Math.floor(totalIncl);
+  const grand = Math.floor(totalIncl);
+
+  return {
+    taxable, cgst, sgst, totalIncl, roundoff, grand
+  };
+}
+
+/** ---------- Render: Cart ---------- **/
+function renderCart() {
+  cartTbody.innerHTML = "";
+  cartCount.innerText = cart.length + (cart.length === 1 ? " item" : " items");
+
+  if (!cart.length) {
+    cartTbody.innerHTML = `<tr><td colspan="7" class="text-center text-muted py-4">No items added</td></tr>`;
+  } else {
+    cart.forEach((line, i) => {
+      const amount = toNumber(line.rate_incl) * toNumber(line.qty);
+      const tr = document.createElement("tr");
+      tr.setAttribute("data-code", line.code);
+      tr.innerHTML = `
+        <td id="cart-code-${line.code}" class="fw-semibold">${line.code}</td>
+        <td id="cart-name-${line.code}">${line.name}</td>
+        <td id="cart-gst-${line.code}" class="text-end">${line.gst_rate}%</td>
+        <td id="cart-rate-${line.code}" class="text-end">${toNumber(line.rate_incl).toFixed(2)}</td>
+        <td class="text-end">
+          <input
+            id="cart-qty-${line.code}"
+            type="number"
+            min="0"
+            class="form-control form-control-sm text-end"
+            value="${toNumber(line.qty)}"
+            style="width:90px; margin-left:auto;"
+          />
+        </td>
+        <td id="cart-amount-${line.code}" class="text-end">${amount.toFixed(2)}</td>
+        <td class="text-center">
+          <button class="btn btn-sm btn-outline-danger" id="cart-remove-${line.code}" title="Remove">
+            ✖
+          </button>
+        </td>
+      `;
+      cartTbody.appendChild(tr);
+
+      // Handlers
+      el(`cart-qty-${line.code}`).addEventListener("change", (e) => {
+        updateQty(line.code, toNumber(e.target.value));
+      });
+      el(`cart-remove-${line.code}`).addEventListener("click", () => {
+        removeFromCart(line.code);
+      });
+    });
+  }
+
+  // totals
+  const t = computeTotals();
+  subtotalEl.innerText = fmt(t.taxable);
+  cgstEl.innerText     = fmt(t.cgst);
+  sgstEl.innerText     = fmt(t.sgst);
+  roundoffEl.innerText = fmt(t.roundoff);
+  grandEl.innerText    = fmt(t.grand);
+}
+
+/** ---------- Actions ---------- **/
+clearCartBtn.addEventListener("click", () => {
+  if (confirm("Clear all items from the cart?")) {
+    cart = [];
+    renderCart();
+  }
+});
+
+saveDraftBtn.addEventListener("click", async () => {
+  // TODO: POST to /api/pos/draft/ with cart payload
+  // Example payload:
+  const payload = {
+    items: cart,
+    totals: computeTotals()
+  };
+  alert("Draft saved (mock). Connect to Django view to persist.");
+});
+
+generateBtn.addEventListener("click", async () => {
+  const invoiceData = {
+    invoice_pk: document.getElementById("invoice_pk").value,
+    invoice_number: document.getElementById("pos-invoice-number").value,
+    invoice_date: document.getElementById("pos-invoice-date").value,
+    buyer_name: document.getElementById("pos-buyer").value,
+    notes: document.getElementById("pos-delivery-note").value,
+    supplier_ref: document.getElementById("pos-supplier-ref").value,
+    other_ref: document.getElementById("pos-other-ref").value,
+    despatch_doc_no: document.getElementById("pos-despatch-doc-no").value,
+    delivery_note_date: document.getElementById("pos-delivery-note-date").value,
+    despatched_through: document.getElementById("pos-despatched-through").value,
+    destination_other: document.getElementById("pos-destination-other").value,
+    status: document.getElementById("pos-status").value
+  };
+  const payload = {
+    items: cart,
+    totals: computeTotals(),
+    invoiceData: invoiceData
+  };
+  fetch(`/invoices/edit/`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRFToken": "{{ csrf_token }}"
+    },
+    body: JSON.stringify(payload)
+  })
+  alert("Invoice generated (mock). Wire this to your Django view.");
+});
+
+/** ---------- Init ---------- **/
+(function init() {
+  renderCart();
+  filterItems();
+})();
+</script>
+{% endblock %}

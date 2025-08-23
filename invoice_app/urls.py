@@ -16,8 +16,25 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from invoices.models import Invoice
+
+@login_required(login_url="/login")
+def dashboard(request):
+    invoices = Invoice.objects.filter(owner=request.user, is_active=True).order_by('-date', '-created_at')
+    return render(request, 'dashboard.html', {
+        "invoices": invoices
+    })
+
+def login_page(request):
+    return render(request, 'login_page.html')
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("demo/", include("demo.urls")),
     path("invoices/", include("invoices.urls")),
+    path("inventory/", include("inventory.urls", namespace="inventory")),
+    path("", dashboard, name='dashboard'),
+    path("login/", login_page, name='login'),
 ]

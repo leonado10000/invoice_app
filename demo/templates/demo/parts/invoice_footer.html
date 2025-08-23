@@ -1,0 +1,59 @@
+<style>
+    .invoice-footer {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        border: 1px solid black;
+        border-top: none;
+        font-size: 0.9rem;
+    }
+
+    .footer-left,
+    .footer-right {
+        border-left: 1px solid black;
+        padding: 10px;
+    }
+
+    .footer-left {
+        border-left: none;
+    }
+
+    .bank-details {
+        margin-bottom: 1rem;
+    }
+
+    .signatory {
+        text-align: right;
+        margin-top: 2rem;
+    }
+
+    .signatory p {
+        margin: 0;
+    }
+</style>
+
+<div class="invoice-footer">
+    <!-- Left column -->
+    <div class="footer-left">
+        <div class="bank-details">
+            <strong>Company's Bank Details</strong><br>
+            Bank Name: IDFC FIRST BANK <br>
+            A/c No.: 10217596558 <br>
+            Branch & IFS Code: DABWALI ROAD, SIRSA & IDFB0021064
+        </div>
+
+        <div class="declaration">
+            <strong>Declaration</strong><br>
+            We declare that this invoice shows the actual price of the goods
+            described and that all particulars are true and correct.
+        </div>
+    </div>
+
+    <!-- Right column -->
+    <div class="footer-right">
+        <div class="signatory">
+            <p>for OM ENTERPRISES</p>
+            <br><br>
+            <p><strong>Authorised Signatory</strong></p>
+        </div>
+    </div>
+</div>
