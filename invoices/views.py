@@ -8,14 +8,7 @@ from inventory.models import Item
 from .forms import InvoiceForm, InvoiceItemFormset
 from django.contrib.auth.decorators import login_required
 from django.template.loader import render_to_string
-
-try:
-    from xhtml2pdf import pisa  # correct import for xhtml2pdf
-    XHTML2PDF_AVAILABLE = True
-except Exception as e:
-    print("xhtml2pdf not available", e)
-    XHTML2PDF_AVAILABLE = False
-
+from xhtml2pdf import pisa
 
 def parse_date_safe(value):
     """
@@ -161,22 +154,66 @@ def invoice_create_or_edit(request):
     return dashboard(request)
 
 
-# @login_required(login_url="/login")
-# def invoice_pdf(request, pk):
-#     invoice = get_object_or_404(Invoice, pk=pk, owner=request.user)
-#     html = render_to_string('invoice/main.html', {'invoice': invoice, 'pdf': True})
-#     if WEASYPRINT_AVAILABLE:
-#         pdf = HTML(string=html).write_pdf()
-#         response = HttpResponse(pdf, content_type='application/pdf')
-#         response['Content-Disposition'] = f'attachment; filename=invoice_{invoice.number}.pdf'
-#         return response
-#     else:
-#         return HttpResponse(html)
-    
-def test_pdf_lib(request, pk):
-    try:
-        import xhtml2pdf
-        available = True
-    except Exception:
-        available = False
-    return JsonResponse({"xhtml2pdf_available": available})
+@login_required(login_url="/login")
+def link_callback(uri, rel):
+    """
+    Convert HTML URIs from {% static %} or MEDIA_URL to absolute system paths
+    so xhtml2pdf can access them.
+    """
+    from django.conf import settings
+    from django.contrib.staticfiles import finders
+    import os
+
+    if uri.startswith(settings.STATIC_URL):
+        path = uri.replace(settings.STATIC_URL, '')
+        absolute_path = finders.find(path)
+        if absolute_path:
+            if isinstance(absolute_path, (list, tuple)):
+                absolute_path = absolute_path[0]
+            return absolute_path
+
+    if settings.MEDIA_URL and uri.startswith(settings.MEDIA_URL):
+        path = uri.replace(settings.MEDIA_URL, '')
+        return os.path.join(settings.MEDIA_ROOT, path)
+
+    return uri  # leave absolute URLs as-is
+
+def invoice_pdf(request, pk):
+    invoice = get_object_or_404(Invoice, pk=pk, owner=request.user)
+
+    # Precompute totals and amounts (no JS needed)
+    items = invoice.items.select_related('item').all()
+    total_wo_tax = 0
+    for it in items:
+        it.amount = float(it.quantity or 0) * float(it.rate_incl_tax or 0)
+        total_wo_tax += it.amount
+
+    cgst = total_wo_tax * 0.09
+    sgst = total_wo_tax * 0.09
+    total_tax = cgst + sgst
+    total = total_wo_tax + total_tax
+    round_off = round(total) - total
+
+    context = {
+        'invoice': invoice,
+        'items': items,
+        'total_wo_tax': total_wo_tax,
+        'cgst': cgst,
+        'sgst': sgst,
+        'total_tax': total_tax,
+        'round_off': round_off,
+        'total': round(total),
+        'pdf': True  # allows template to hide inputs, JS, etc.
+    }
+
+    # Render HTML
+    html = render_to_string('invoice/main.html', context)
+
+    # Generate PDF
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename=invoice_{invoice.number}.pdf'
+
+    pisa_status = pisa.CreatePDF(html, dest=response, link_callback=link_callback)
+    if pisa_status.err:
+        return HttpResponse("Error generating PDF", status=500)
+    return response
