@@ -178,6 +178,7 @@ def link_callback(uri, rel):
 
     return uri  # leave absolute URLs as-is
 
+@login_required(login_url="/login")
 def invoice_pdf(request, pk):
     invoice = get_object_or_404(Invoice, pk=pk, owner=request.user)
 
