@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import Company, Customer, Invoice, InvoiceItem
 
-
+    
 class InvoiceItemInline(admin.TabularInline):
     model = InvoiceItem
     extra = 1
