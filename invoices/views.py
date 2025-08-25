@@ -95,7 +95,7 @@ def invoice_pos(request, pk):
             "unit": item.unit
         } for item in Item.objects.filter(user=request.user)
     ]
-    buyers = Customer.objects.filter(is_active=True)
+    buyers = Customer.objects.filter(user=request.user,is_active=True)
     return render(request, "invoice/pos.html", {
         "data":d,
         "buyers": buyers,
