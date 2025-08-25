@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>{% if is_create %}Add{% else %}Edit{% endif %} Customer</h2>
+<form method="post">{% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save</button>
+    <a href="{% url 'customer:list' %}">Cancel</a>
+</form>
+
+{% endblock %}

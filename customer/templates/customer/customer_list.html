@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-3">Customers</h2>
+
+    <div class="d-flex justify-content-between mb-3">
+        <form method="get" class="d-flex">
+            <input type="text" name="q" class="form-control me-2" placeholder="Search..." value="{{ q }}">
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+        <a href="{% url 'customer:create' %}" class="btn btn-success">Add Customer</a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Name</th>
+                    <th>GSTIN</th>
+                    <th>State</th>
+                    <th>Phone</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for customer in customers %}
+                <tr>
+                    <td>{{ customer.name }}</td>
+                    <td>{{ customer.gstin }}</td>
+                    <td>{{ customer.state }}</td>
+                    <td>{{ customer.phone }}</td>
+                    <td>
+                        <a href="{% url 'customer:update' customer.pk %}" class="btn btn-sm btn-warning me-1">Edit</a>
+                        <a href="{% url 'customer:delete' customer.pk %}" class="btn btn-sm btn-danger">Delete</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center">No customers found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            {% if customers.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ customers.previous_page_number }}&q={{ q }}">Previous</a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <span class="page-link">Previous</span>
+            </li>
+            {% endif %}
+
+            <li class="page-item disabled">
+                <span class="page-link">Page {{ customers.number }} of {{ customers.paginator.num_pages }}</span>
+            </li>
+
+            {% if customers.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ customers.next_page_number }}&q={{ q }}">Next</a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <span class="page-link">Next</span>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+{% endblock %}

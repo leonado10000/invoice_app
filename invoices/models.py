@@ -113,7 +113,7 @@ class InvoiceItem(models.Model):
 
     @property
     def total_without_tax(self):
-        return float(self.price_exclusive) * float(self.quantity) * (1 - float(self.discount_percent or 0)/100.0)
+        return float(self.price_exclusive   ) * float(self.quantity) * (1 - float(self.discount_percent or 0)/100.0)
 
     @property
     def tax_amount(self):

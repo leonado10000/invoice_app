@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "invoices",
     "inventory",
+    "customer",
     "demo"
 ]
 
@@ -82,23 +83,23 @@ WSGI_APPLICATION = "invoice_app.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-DATABASES = {
-        'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME' : POSTGRES_DATABASE,
-        'HOST': POSTGRES_HOST,
-        'URL': POSTGRES_URL,
-        'PRISMA_URL': POSTGRES_PRISMA_URL,
-        'USER': POSTGRES_USER,
-        'PASSWORD' : POSTGRES_PASSWORD
-    },
-}
 # DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.sqlite3",
-#         "NAME": BASE_DIR / "db.sqlite3",
-#     }
+#         'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME' : POSTGRES_DATABASE,
+#         'HOST': POSTGRES_HOST,
+#         'URL': POSTGRES_URL,
+#         'PRISMA_URL': POSTGRES_PRISMA_URL,
+#         'USER': POSTGRES_USER,
+#         'PASSWORD' : POSTGRES_PASSWORD
+#     },
 # }
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
+    }
+}
 
 
 # Password validation

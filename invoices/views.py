@@ -10,6 +10,48 @@ from django.contrib.auth.decorators import login_required
 from django.template.loader import render_to_string
 from xhtml2pdf import pisa
 
+_NUM_WORDS_0_19 = [
+    'Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six',
+    'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve',
+    'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen',
+    'Eighteen', 'Nineteen'
+]
+
+_TENS_WORDS = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety']
+
+_SCALE_UNITS = [
+    (10**7, 'Crore'),
+    (10**5, 'Lakh'),
+    (10**3, 'Thousand'),
+    (10**2, 'Hundred')
+]
+
+def number_to_indian_words(num: int) -> str:
+    num = int(num)
+    if num < 0:
+        return 'Minus ' + number_to_indian_words(-num)
+    if num < 20:
+        return _NUM_WORDS_0_19[num]
+    if num < 100:
+        tens, rem = divmod(num, 10)
+        tens = int(tens)
+        rem = int(rem)
+        return _TENS_WORDS[tens] + (f' {_NUM_WORDS_0_19[rem]}' if rem else '')
+    
+    for scale_val, scale_name in _SCALE_UNITS:
+        if num >= scale_val:
+            leading, rem = divmod(num, scale_val)
+            words = number_to_indian_words(leading) + f' {scale_name}'
+            if rem:
+                words += ' ' + number_to_indian_words(rem)
+            return words
+    # Should not reach here
+    return ''
+
+def amount_to_words(num: int) -> str:
+    return number_to_indian_words(num) + ' Only'
+
+
 def parse_date_safe(value):
     """
     Convert YYYY-MM-DD string → date object.
@@ -53,6 +95,7 @@ def invoice_pos(request, pk):
         } for item in Item.objects.all()
     ]
     buyers = Customer.objects.filter(is_active=True)
+    print(invoice)
     return render(request, "invoice/pos.html", {
         "data":d,
         "buyers": buyers,
@@ -139,7 +182,7 @@ def invoice_create_or_edit(request):
                     invoice=invoice_obj,
                     item=linked_item,
                     description=item_data.get("name", ""),
-                    quantity=item_data.get("quantity", 1),
+                    quantity=item_data.get("qty", 1),
                     rate_incl_tax=item_data.get("rate_incl", 0),
                     rate_tax_ex=(item_data.get("rate_incl", 0) / (1 + (item_data.get("gst_rate", 18) / 100))),
                     gst_rate=item_data.get("gst_rate", 18),
@@ -153,7 +196,40 @@ def invoice_create_or_edit(request):
 
     return dashboard(request)
 
+def pdf_test(request, pk):
+    invoice = get_object_or_404(Invoice, pk=pk, owner=request.user)
 
+    items = invoice.items.select_related('item').all()
+    total_wo_tax = 0
+
+    # Row calculations
+    for i, it in enumerate(items, start=1):
+        qty = float(it.quantity or 0)
+        rate = float(it.rate_incl_tax or 0)
+        it.amount = qty * rate  # equivalent to JS row amount
+        total_wo_tax += it.amount
+
+    # Tax calculations (same as JS)
+    cgst = total_wo_tax * 0.09
+    sgst = total_wo_tax * 0.09
+    total = total_wo_tax + cgst + sgst
+    round_off = round(total) - total
+    total_with_tax = round(total)
+
+    context = {
+        'invoice': invoice,
+        'items': items,
+        'total_wo_tax': total_wo_tax,
+        'cgst': cgst,
+        'sgst': sgst,
+        'round_off': round_off,
+        'total': total_with_tax,
+        'pdf': True
+    }
+
+    # Render HTML
+    return render(request,'invoice_pdf/main.html', context)
+    
 @login_required(login_url="/login")
 def link_callback(uri, rel):
     """
@@ -182,29 +258,45 @@ def link_callback(uri, rel):
 def invoice_pdf(request, pk):
     invoice = get_object_or_404(Invoice, pk=pk, owner=request.user)
 
-    # Precompute totals and amounts (no JS needed)
     items = invoice.items.select_related('item').all()
     total_wo_tax = 0
-    for it in items:
-        it.amount = float(it.quantity or 0) * float(it.rate_incl_tax or 0)
-        total_wo_tax += it.amount
+    cgst = 0
+    sgst = 0
+    tax_list = {}
 
-    cgst = total_wo_tax * 0.09
-    sgst = total_wo_tax * 0.09
-    total_tax = cgst + sgst
-    total = total_wo_tax + total_tax
+    # Row calculations
+    for i, it in enumerate(items, start=1):
+        qty = float(it.quantity or 0)
+        total_of_item_wo_tax = float(it.total_without_tax or 0)
+        total_wo_tax += total_of_item_wo_tax 
+
+        rate = float(it.rate_incl_tax or 0)
+        it.amount = qty * rate
+        tax_list[int(it.gst_rate//2)] = {
+            "taxable_value":tax_list.get(int(it.gst_rate//2),{"taxable_value":0})["taxable_value"] + total_of_item_wo_tax,
+            "taxed_amount":tax_list.get(int(it.gst_rate//2),{"taxed_amount":0})["taxed_amount"] + (it.amount - total_of_item_wo_tax)/2,
+            "total_taxed":tax_list.get(int(it.gst_rate//2),{"total_taxed":0})["total_taxed"] + it.amount
+        }
+
+        cgst += (it.amount - total_of_item_wo_tax)/2
+    
+    sgst = cgst
+    total = total_wo_tax + cgst + sgst
     round_off = round(total) - total
-
+    total_with_tax = round(total)
     context = {
         'invoice': invoice,
         'items': items,
         'total_wo_tax': total_wo_tax,
+        'total_tax_amount_words':amount_to_words(int(cgst*2)),
         'cgst': cgst,
         'sgst': sgst,
-        'total_tax': total_tax,
         'round_off': round_off,
-        'total': round(total),
-        'pdf': True  # allows template to hide inputs, JS, etc.
+        'total': total_with_tax,
+        'total_full':total,
+        'total_full_words':amount_to_words(total),
+        'pdf': True,
+        'tax_list':tax_list
     }
 
     # Render HTML
@@ -212,9 +304,9 @@ def invoice_pdf(request, pk):
 
     # Generate PDF
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename=invoice_{invoice.number}.pdf'
-
+    response['Content-Disposition'] = f'attachment; filename=invoice_{invoice.number}_{invoice.date}.pdf'
     pisa_status = pisa.CreatePDF(html, dest=response, link_callback=link_callback)
+
     if pisa_status.err:
         return HttpResponse("Error generating PDF", status=500)
     return response

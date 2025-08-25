@@ -1,0 +1,98 @@
+<table style="width:100%; border-collapse: collapse; ">
+    <thead>
+        <tr>
+            <th style="border:1px solid black; padding:6px;">Sl. No.</th>
+            <th style="border:1px solid black; padding:6px;">Item Code</th>
+            <th style="border:1px solid black; padding:6px;width: 50mm;">Description of Goods</th>
+            <th style="border:1px solid black; padding:6px;">GST Rate</th>
+            <th style="border:1px solid black; padding:6px;">Rate (ex. tax)</th>
+            <th style="border:1px solid black; padding:6px;">Quantity</th>
+            <th style="border:1px solid black; padding:6px;">Rate (incl. tax)</th>
+            <th style="border:1px solid black; padding:6px;width: 10mm;">per</th>
+            <th style="border:1px solid black; padding:6px;">Amount</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for item in items %}
+        <tr style="border: 0px;">
+            <td style="border-right:1px solid black; padding:3px;">{{ forloop.counter }}</td>
+            <td style="border-right:1px solid black; padding:3px;">{{ item.item.code }}</td>
+            <td style="border-right:1px solid black; padding:3px;">{{ item.item.name }}</td>
+            <td style="border-right:1px solid black; padding:3px; text-align:right;">{{ item.gst_rate }}</td>
+            <td style="border-right:1px solid black; padding:3px; text-align:right;">{{ item.rate_tax_ex }}</td>
+            <td style="border-right:1px solid black; padding:3px; text-align:right;">{{ item.quantity }}</td>
+            <td style="border-right:1px solid black; padding:3px; text-align:right;">{{ item.rate_incl_tax }}</td>
+            <td style="border-right:1px solid black; padding:3px;">{{ item.item.unit }}</td>
+            <td style="border-right:1px solid black; padding:3px; text-align:right;">{{ item.amount|floatformat:2 }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+
+    <tfoot>
+        <tr style="border: 0px;">
+            <td style="border-right:1px solid black;"></td>
+            <td style="border-right:1px solid black;"></td>
+            
+            <td colspan="1" style="text-align:right; border-left:1px solid black;border-right:1px solid black; padding:2px;">Total</td>
+            
+            <td style="border-right:1px solid black;"></td>
+            <td style="border-right:1px solid black;"></td>
+            <td style="border-right:1px solid black;"></td>
+            <td style="border-right:1px solid black;"></td>
+            <td style="border-right:1px solid black;"></td>
+            <td style="border-left:1px solid black; padding:2px; text-align:right;">{{ total_wo_tax|floatformat:2 }}</td>
+        </tr>
+        <tr style="border: 0px;">
+            <td style="border-right:1px solid black;"></td>
+            <td style="border-right:1px solid black;"></td>
+            
+            <td colspan="1" style="text-align:right; border-left:1px solid black;border-right:1px solid black; padding:2px;"><strong>CGST</strong></td>
+            
+            <td style="border-right:1px solid black;"></td>
+            <td style="border-right:1px solid black;"></td>
+            <td style="border-right:1px solid black;"></td>
+            <td style="border-right:1px solid black;"></td>
+            <td style="border-right:1px solid black;"></td>
+            <td style="border-left:1px solid black; padding:2px; text-align:right;">{{ cgst|floatformat:2 }}</td>
+        </tr>
+        <tr style="border: 0px;">
+            <td style="border-right:1px solid black;"></td>
+            <td style="border-right:1px solid black;"></td>
+            
+            <td colspan="1" style="text-align:right; border-left:1px solid black;border-right:1px solid black; padding:2px;"><strong>SGST</strong></td>
+            
+            <td style="border-right:1px solid black;"></td>
+            <td style="border-right:1px solid black;"></td>
+            <td style="border-right:1px solid black;"></td>
+            <td style="border-right:1px solid black;"></td>
+            <td style="border-right:1px solid black;"></td>
+            <td style="border-left:1px solid black; padding:2px; text-align:right;">{{ sgst|floatformat:2 }}</td>
+        </tr>
+        <tr style="border: 0px;">
+            <td style="border-right:1px solid black;"></td>
+            <td style="border-right:1px solid black;"></td>
+            
+            <td colspan="1" style="text-align:right; border-left:1px solid black;border-right:1px solid black; padding:2px;"><strong>Round Off</strong></td>
+            
+            <td style="border-right:1px solid black;"></td>
+            <td style="border-right:1px solid black;"></td>
+            <td style="border-right:1px solid black;"></td>
+            <td style="border-right:1px solid black;"></td>
+            <td style="border-right:1px solid black;"></td>
+            <td style="border-left:1px solid black; padding:2px; text-align:right;">{{ round_off|floatformat:2 }}</td>
+        </tr>
+        <tr>
+            <td style="border-right:1px solid black;"></td>
+            <td style="border-right:1px solid black;"></td>
+            <td colspan="1" style="text-align:right; border-left:1px solid black;border-right:1px solid black; padding:2px;"><strong>Total</strong></td>
+            
+            <td style="border-right:1px solid black;"></td>
+            <td style="border-right:1px solid black;"></td>
+            <td style="border-right:1px solid black;"></td>
+            <td style="border-right:1px solid black;"></td>
+            <td style="border-right:1px solid black;"></td>
+            <td style="border-left:1px solid black; padding:2px; text-align:right; font-weight:bold;">{{ total|floatformat:2 }}</td>
+        </tr>
+    </tfoot>
+</table>

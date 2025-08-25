@@ -4,7 +4,6 @@
             width: 230mm;
             min-height: 1123px;
             margin: 0 auto;
-            padding: 10mm;
             border: 2px solid #000;
             box-shadow: 0 2px 6px rgba(0,0,0,0.2);
         }
@@ -12,9 +11,9 @@
 
 <div class="invoice-paper">
     <!-- Your structured invoice sections here -->
-    {% include "invoice/parts/company_details.html" %}
-    {% include "invoice/parts/buyer_details.html" %}
-    {% include "invoice/parts/items_table.html" %}
-    {% include "invoice/parts/tax_table.html" %}
-    {% include "invoice/parts/invoice_footer.html" %}
+    {% include "invoice_pdf/parts/company_details.html" %}
+    {% include "invoice_pdf/parts/buyer_details.html" %}
+    {% include "invoice_pdf/parts/items_table.html" %}
+    {% include "invoice_pdf/parts/tax_table.html" %}
+    {% include "invoice_pdf/parts/invoice_footer.html" %}
 </div>

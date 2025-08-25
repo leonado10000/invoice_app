@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import invoice_pdf, invoice_view, invoice_pos, invoice_detail, invoice_create_or_edit
+from .views import invoice_pdf, invoice_view, invoice_pos, invoice_detail, invoice_create_or_edit, pdf_test
 
 urlpatterns = [
     path('', invoice_view, name='invoice'),
@@ -8,4 +8,5 @@ urlpatterns = [
     path('details/<int:pk>', invoice_detail, name='detail'),
     path('edit/', invoice_create_or_edit, name='create'),
     path('pdf/<int:pk>', invoice_pdf, name='invoice_pdf'),
+    path('pdf_test/<int:pk>', pdf_test, name='test_invoice_pdf'),
 ]

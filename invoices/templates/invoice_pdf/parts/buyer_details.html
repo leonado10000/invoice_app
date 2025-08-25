@@ -1,0 +1,46 @@
+<table style="width:100%; border:1px solid black; border-collapse: collapse; ">
+  <tr>
+    <!-- LEFT COLUMN -->
+    <td style="width:50%; border-right:1px solid black; vertical-align:top; padding:0;">
+      <table style="width:100%; border-collapse: collapse; ">
+        <tr>
+          <td style="border-bottom:1px solid black; padding: 3px;">
+            <strong>Buyer</strong><br>{{ invoice.customer.name }}
+          </td>
+        </tr>
+        <tr>
+          <td style="border-bottom:1px solid black; padding:3px;">
+            <strong>State Name</strong><br>{{ invoice.customer.state }}, Code: {{ invoice.customer.state_code }}
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:3px;">
+            <strong>Place of Supply</strong><br>{{invoice.customer.state}}
+          </td>
+        </tr>
+      </table>
+    </td>
+
+    <!-- RIGHT COLUMN -->
+    <td style="width:50%; vertical-align:top; padding:0;">
+      <table style="width:100%; border-collapse: collapse; ">
+        <tr>
+          <td style="border-bottom:1px solid black; border-right:1px solid black; padding:7px;">
+            <strong>Despatch Document No.</strong><br>{{invoice.despatch_doc_no}}
+          </td>
+          <td style="border-bottom:1px solid black; padding:7px;">
+            <strong>Delivery Note Date</strong><br>{{invoice.delivery_note_date|date:'Y-m-d'}}
+          </td>
+        </tr>
+        <tr>
+          <td style="border-bottom:1px solid black; border-right:1px solid black; padding:10px;">
+            <strong>Despatched through</strong><br>{{invoice.despatched_through}}
+          </td>
+          <td style="border-bottom:1px solid black; padding:10px;">
+            <strong>Destination</strong><br>{{invoice.destination_other}}
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>

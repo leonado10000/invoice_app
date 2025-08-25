@@ -1,0 +1,101 @@
+<div style="border:1px solid black;border-top:none;padding:8px;">
+    Amount Chargeable (in words):  
+    <strong>INR {{total_full_words}}</strong>
+</div>
+
+<!-- A4 content width ≈ 190mm (adjust if your page margins differ) -->
+<table style="width:190mm;border-collapse:collapse;margin-top:-1px;">
+    <thead>
+        <tr>
+            <!-- Col widths plan (sum = 190mm):
+                 Taxable:55  CT Rate:20  CT Amt:30  ST Rate:20  ST Amt:30  TotalTax:35 -->
+            <th rowspan="2" style="border:1px solid black;padding:6px;background:#f9f9f9;">
+                <div style="width:55mm;text-align:center;">Taxable Value</div>
+            </th>
+            <th colspan="2" style="border:1px solid black;padding:6px;background:#f9f9f9;">
+                <div style="width:50mm;text-align:center;">Central Tax</div>
+            </th>
+            <th colspan="2" style="border:1px solid black;padding:6px;background:#f9f9f9;">
+                <div style="width:50mm;text-align:center;">State Tax</div>
+            </th>
+            <th rowspan="2" style="border:1px solid black;padding:6px;background:#f9f9f9;">
+                <div style="width:35mm;text-align:center;">Total Tax Amount</div>
+            </th>
+        </tr>
+        <tr>
+            <th style="border:1px solid black;padding:6px;background:#f9f9f9;">
+                <div style="width:20mm;text-align:center;">Rate</div>
+            </th>
+            <th style="border:1px solid black;padding:6px;background:#f9f9f9;">
+                <div style="width:30mm;text-align:center;">Amount</div>
+            </th>
+            <th style="border:1px solid black;padding:6px;background:#f9f9f9;">
+                <div style="width:20mm;text-align:center;">Rate</div>
+            </th>
+            <th style="border:1px solid black;padding:6px;background:#f9f9f9;">
+                <div style="width:30mm;text-align:center;">Amount</div>
+            </th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for key, value in tax_list.items %}
+        <tr>
+            <td style="border:1px solid black;padding:6px;">
+                <div style="width:55mm;text-align:right;">{{ value.taxable_value|floatformat:2 }}</div>
+            </td>
+            <td style="border:1px solid black;padding:6px;">
+                <div style="width:20mm;text-align:center;white-space:nowrap;">{{ key }}%</div>
+            </td>
+            <td style="border:1px solid black;padding:6px;">
+                <div style="width:30mm;text-align:right;">{{ value.taxed_amount|floatformat:2 }}</div>
+            </td>
+            <td style="border:1px solid black;padding:6px;">
+                <div style="width:20mm;text-align:center;white-space:nowrap;">{{ key }}%</div>
+            </td>
+            <td style="border:1px solid black;padding:6px;">
+                <div style="width:30mm;text-align:right;">{{ value.taxed_amount|floatformat:2 }}</div>
+            </td>
+            <td style="border:1px solid black;padding:6px;">
+                <div style="width:35mm;text-align:right;">{{ value.total_taxed|floatformat:2 }}</div>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+
+    <tfoot>
+        <tr>
+            <td style="border:1px solid black;padding:6px;">
+                <div style="width:55mm;font-weight:bold;text-align:right;">
+                    Total: {{ total_wo_tax|floatformat:2 }}
+                </div>
+            </td>
+            <td style="border:1px solid black;padding:6px;">
+                <div style="width:20mm;">&nbsp;</div>
+            </td>
+            <td style="border:1px solid black;padding:6px;">
+                <div style="width:30mm;font-weight:bold;text-align:right;">
+                    {{ cgst|floatformat:2 }}
+                </div>
+            </td>
+            <td style="border:1px solid black;padding:6px;">
+                <div style="width:20mm;">&nbsp;</div>
+            </td>
+            <td style="border:1px solid black;padding:6px;">
+                <div style="width:30mm;font-weight:bold;text-align:right;">
+                    {{ sgst|floatformat:2 }}
+                </div>
+            </td>
+            <td style="border:1px solid black;padding:6px;">
+                <div style="width:35mm;font-weight:bold;text-align:right;">
+                    {{ total_full }}
+                </div>
+            </td>
+        </tr>
+    </tfoot>
+</table>
+
+<div style="border:1px solid black;border-top:none;padding:8px;">
+    Tax Amount (in words):  
+    <strong>INR {{ total_tax_amount_words }}</strong>
+</div>

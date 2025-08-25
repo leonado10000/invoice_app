@@ -37,6 +37,7 @@ urlpatterns = [
     path("demo/", include("demo.urls")),
     path("invoices/", include("invoices.urls")),
     path("inventory/", include("inventory.urls", namespace="inventory")),
+    path("customer/",include("customer.urls")),
     path("", dashboard, name='dashboard'),
     path("login/", login_page, name='login'),
 ]

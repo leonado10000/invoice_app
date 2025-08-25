@@ -1,0 +1,30 @@
+<table style="width:100%; border:1px solid black; border-collapse: collapse;">
+  <tr>
+    <!-- LEFT COLUMN -->
+    <td style="width:50%; border:1px solid black; vertical-align:top; padding:2px;">
+      <h3 style="margin:0;">{{invoice.company}}</h3>
+      {{invoice.company.address}}
+      <br>
+      GSTIN/UIN: <br> 06HLHPK0832H1Z6 <br>
+      State Name: {{invoice.company.state}}, Code: {{invoice.company.state_code}}
+    </td>
+
+    <!-- RIGHT COLUMN -->
+    <td style="width:50%; border:1px solid black; vertical-align:top; padding:0;">
+      <table style="width:100%; border-collapse: collapse; ">
+        <tr>
+          <td style="border:1px solid black; padding:3px;"><strong>Invoice No.</strong><br>{{ invoice.number }}</td>
+          <td style="border:1px solid black; padding:3px;"><strong>Dated</strong><br>{{ invoice.date|date:'Y-m-d' }}</td>
+        </tr>
+        <tr>
+          <td style="border:1px solid black; padding:3px;"><strong>Delivery Note</strong><br>{{invoice.notes}}</td>
+          <td style="border:1px solid black; padding:3px;"><strong>Supplier's Ref.</strong><br>{{invoice.supplier_ref}}</td>
+        </tr>
+        <tr>
+          <td style="border:1px solid black; padding:4px;"><strong>Other Reference(s)</strong><br>{{invoice.other_ref}}</td>
+          <td style="border:1px solid black; padding:4px;"><strong>Optional</strong><br></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>

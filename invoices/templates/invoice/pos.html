@@ -47,6 +47,7 @@
                   {% endif %}
                 {% endfor %}
               </select>
+              <a class="btn btn-primary btn-sm" href="{% url 'customer:create' %}">Add New Buyer</a>
             </td>
           </tr>
 
@@ -112,7 +113,7 @@
             <td colspan="1">
               <select name="status" id="pos-status">
                 {% for status in status_list %}
-                  {% if status.1 == invoice.status %}
+                  {% if status.1 == invoice.status|lower %}
                     <option value="{{status.0}}" selected>{{status.1}}</option>
                   {% else %}
                     <option value="{{status.0}}">{{status.1}}</option>
