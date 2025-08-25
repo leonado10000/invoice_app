@@ -1,10 +1,10 @@
-<div style="border:1px solid black;border-top:none;padding:8px;">
+<div style="border:1px solid black;padding:8px;">
     Amount Chargeable (in words):  
     <strong>INR {{total_full_words}}</strong>
 </div>
 
 <!-- A4 content width ≈ 190mm (adjust if your page margins differ) -->
-<table style="width:190mm;border-collapse:collapse;margin-top:-1px;">
+<table style="width:190mm;border-collapse:collapse;margin-top:-1px;border: 1px sild black;">
     <thead>
         <tr>
             <!-- Col widths plan (sum = 190mm):
@@ -88,14 +88,14 @@
             </td>
             <td style="border:1px solid black;padding:6px;">
                 <div style="width:35mm;font-weight:bold;text-align:right;">
-                    {{ total_full }}
+                    {{ total_tax|floatformat:2 }}
                 </div>
             </td>
         </tr>
     </tfoot>
 </table>
 
-<div style="border:1px solid black;border-top:none;padding:8px;">
+<div style="border:1px solid black;padding:8px;">
     Tax Amount (in words):  
     <strong>INR {{ total_tax_amount_words }}</strong>
 </div>

@@ -15,6 +15,7 @@ class Company(models.Model):
     state_code = models.CharField(max_length=6, blank=True)
     bank_name = models.CharField(max_length=200, blank=True)
     bank_account = models.CharField(max_length=100, blank=True)
+    bank_branch = models.CharField(max_length=100,default="")
     ifsc = models.CharField(max_length=30, blank=True)
 
     class Meta:

@@ -1,4 +1,4 @@
-<table style="width:100%; border-collapse: collapse; ">
+<table style="width:100%; border-collapse: collapse; border: 1px sild black;">
     <thead>
         <tr>
             <th style="border:1px solid black; padding:6px;">Sl. No.</th>
@@ -30,18 +30,18 @@
     </tbody>
 
     <tfoot>
-        <tr style="border: 0px;">
+        <tr style="border:0px;">
             <td style="border-right:1px solid black;"></td>
             <td style="border-right:1px solid black;"></td>
             
             <td colspan="1" style="text-align:right; border-left:1px solid black;border-right:1px solid black; padding:2px;">Total</td>
             
             <td style="border-right:1px solid black;"></td>
+            <td style="border-right:1px solid black; padding:2px; text-align:right;">{{ total_wo_tax|floatformat:2 }}</td>
             <td style="border-right:1px solid black;"></td>
             <td style="border-right:1px solid black;"></td>
             <td style="border-right:1px solid black;"></td>
             <td style="border-right:1px solid black;"></td>
-            <td style="border-left:1px solid black; padding:2px; text-align:right;">{{ total_wo_tax|floatformat:2 }}</td>
         </tr>
         <tr style="border: 0px;">
             <td style="border-right:1px solid black;"></td>

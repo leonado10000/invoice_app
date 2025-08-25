@@ -1,59 +1,26 @@
-<style>
-    .invoice-footer {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        border: 1px solid black;
-        border-top: none;
-        font-size: 0.9rem;
-    }
-
-    .footer-left,
-    .footer-right {
-        border-left: 1px solid black;
-        padding: 10px;
-    }
-
-    .footer-left {
-        border-left: none;
-    }
-
-    .bank-details {
-        margin-bottom: 1rem;
-    }
-
-    .signatory {
-        text-align: right;
-        margin-top: 2rem;
-    }
-
-    .signatory p {
-        margin: 0;
-    }
-</style>
-
-<div class="invoice-footer">
+<table border="1" cellspacing="0" cellpadding="6" width="100%">
+  <tr>
     <!-- Left column -->
-    <div class="footer-left">
-        <div class="bank-details">
-            <strong>Company's Bank Details</strong><br>
-            Bank Name: IDFC FIRST BANK <br>
-            A/c No.: 10217596558 <br>
-            Branch & IFS Code: DABWALI ROAD, SIRSA & IDFB0021064
-        </div>
-
-        <div class="declaration">
-            <strong>Declaration</strong><br>
-            We declare that this invoice shows the actual price of the goods
-            described and that all particulars are true and correct.
-        </div>
-    </div>
+    <td width="50%" valign="top">
+      <p><b>Company's Bank Details</b></p>
+      <p>
+        Bank Name: {{invoice.company.bank_name}} <br/>
+        A/c No.: {{invoice.company.bank_account}} <br/>
+        Branch : {{invoice.company.bank_branch}} <br> 
+        IFS Code: {{invoice.company.ifsc}}
+      </p>
+      <p><b>Declaration</b></p>
+      <p>
+        We declare that this invoice shows the actual price of the goods
+        described and that all particulars are true and correct.
+      </p>
+    </td>
 
     <!-- Right column -->
-    <div class="footer-right">
-        <div class="signatory">
-            <p>for OM ENTERPRISES</p>
-            <br><br>
-            <p><strong>Authorised Signatory</strong></p>
-        </div>
-    </div>
-</div>
+    <td width="50%" valign="top" align="right">
+      <p>for {{invoice.company.name|upper}}</p>
+      <br/><br/><br/>
+      <p><b>Authorised Signatory</b></p>
+    </td>
+  </tr>
+</table>

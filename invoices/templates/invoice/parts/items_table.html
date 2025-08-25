@@ -1,153 +1,98 @@
-
-
-<style>
-    .items-table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 0.9rem;
-    }
-
-    .items-table th {
-        border: 1px solid black;
-        padding: 6px;
-        text-align: left;
-    }
-
-    .items-table td {
-        border-left: 1px solid black;
-        border-right: 1px solid black;
-        padding: 6px;
-    }
-
-    .items-table td:nth-child(6),
-    .items-table td:nth-child(9) {
-        text-align: right;
-    }
-
-    .items-table tfoot td {
-        border-left: 1px solid black;
-        border-right: 1px solid black;
-        padding: 6px;
-    }
-
-    .items-table tfoot tr td {
-        border-top: none;
-        border-bottom: none;
-    }
-
-    .items-table tfoot tr:last-child td {
-        border-bottom: 1px solid black;
-        font-weight: bold;
-    }
-
-    .text-right {
-        text-align: right;
-    }
-
-    .tax-totals tr td input {
-        text-align: right;
-        outline: none;
-        border: 0px;
-        font-size: 0.9rem;
-        max-width: 100px;
-    }
-
-    .qty-input {
-        border: 0px;
-        width: 60px;
-        text-align: right;
-        margin: 0px;
-    }
-</style>
-
-<table class="items-table" id="itemsTable">
+<table style="width:100%; border-collapse: collapse; ">
     <thead>
         <tr>
-            <th>Sl. No.</th>
-            <th>Item Code</th>
-            <th>Description of Goods</th>
-            <th>GST Rate</th>
-            <th>Rate (ex. tax)</th>
-            <th>Quantity</th>
-            <th>Rate (incl. tax)</th>
-            <th>per</th>
-            <th>Amount</th>
+            <th style="border:1px solid black; padding:6px;">Sl. No.</th>
+            <th style="border:1px solid black; padding:6px;">Item Code</th>
+            <th style="border:1px solid black; padding:6px;width: 50mm;">Description of Goods</th>
+            <th style="border:1px solid black; padding:6px;">GST Rate</th>
+            <th style="border:1px solid black; padding:6px;">Rate (ex. tax)</th>
+            <th style="border:1px solid black; padding:6px;">Quantity</th>
+            <th style="border:1px solid black; padding:6px;">Rate (incl. tax)</th>
+            <th style="border:1px solid black; padding:6px;width: 10mm;">per</th>
+            <th style="border:1px solid black; padding:6px;">Amount</th>
         </tr>
     </thead>
 
-    <tbody>
+    <tbody style="border-left: 1px solid black;">
         {% for item in items %}
-            <tr>
-                <td id="slno-1">1</td>
-                <td id="itemno-1">{{item.item.code}}</td>
-                <td id="desc-1">{{item.item.name}}</td>
-                <td id="gst-1">{{item.gst_rate}}</td>
-                <td id="rate-per-1">{{item.rate_tax_ex}}</td>
-                <td><input type="number" id="quantity-1" class="qty-input" value="{{item.quantity}}" min="0" onchange="recalcRow(1)"></td>
-                <td id="rate-incl-1">{{item.rate_incl_tax}}</td>
-                <td id="disc-1">0</td>
-                <td><input type="number" id="amount-1" value="2196.60" readonly></td>
-            </tr>
+        <tr style="border: 0px;">
+            <td style="border-right:1px solid black; padding:3px;">{{ forloop.counter }}</td>
+            <td style="border-right:1px solid black; padding:3px;">{{ item.item.code }}</td>
+            <td style="border-right:1px solid black; padding:3px;">{{ item.item.name }}</td>
+            <td style="border-right:1px solid black; padding:3px; text-align:right;">{{ item.gst_rate }}</td>
+            <td style="border-right:1px solid black; padding:3px; text-align:right;">{{ item.rate_tax_ex }}</td>
+            <td style="border-right:1px solid black; padding:3px; text-align:right;">{{ item.quantity }}</td>
+            <td style="border-right:1px solid black; padding:3px; text-align:right;">{{ item.rate_incl_tax }}</td>
+            <td style="border-right:1px solid black; padding:3px;">{{ item.item.unit }}</td>
+            <td style="border-right:1px solid black; padding:3px; text-align:right;">{{ item.amount|floatformat:2 }}</td>
+        </tr>
         {% endfor %}
     </tbody>
 
-    <tfoot class="tax-totals">
-        <tr>
-            <td colspan="8" class="text-right">Total</td>
-            <td><input onchange="total_change()" id="total-without-tax" type="number" value="2527.10"></td>
+    <tfoot style="border-left: 1px solid black; border-bottom: 1px solid black;">
+        <tr style="border:0px;">
+            <td style="border-right:1px solid black;"></td>
+            <td style="border-right:1px solid black;"></td>
+            
+            <td colspan="1" style="text-align:right; border-left:1px solid black;border-right:1px solid black; padding:2px;">Total</td>
+            
+            <td style="border-right:1px solid black;"></td>
+            <td style="border-right:1px solid black; padding:2px; text-align:right;">{{ total_wo_tax|floatformat:2 }}</td>
+            <td style="border-right:1px solid black;"></td>
+            <td style="border-right:1px solid black;"></td>
+            <td style="border-right:1px solid black;"></td>
+            <td style="border-right:1px solid black;"></td>
+        </tr>
+        <tr style="border: 0px;">
+            <td style="border-right:1px solid black;"></td>
+            <td style="border-right:1px solid black;"></td>
+            
+            <td colspan="1" style="text-align:right; border-left:1px solid black;border-right:1px solid black; padding:2px;"><strong>CGST</strong></td>
+            
+            <td style="border-right:1px solid black;"></td>
+            <td style="border-right:1px solid black;"></td>
+            <td style="border-right:1px solid black;"></td>
+            <td style="border-right:1px solid black;"></td>
+            <td style="border-right:1px solid black;"></td>
+            <td style="border-right:1px solid black; padding:2px; text-align:right;">{{ cgst|floatformat:2 }}</td>
+        </tr>
+        <tr style="border: 0px;">
+            <td style="border-right:1px solid black;"></td>
+            <td style="border-right:1px solid black;"></td>
+            
+            <td colspan="1" style="text-align:right; border-left:1px solid black;border-right:1px solid black; padding:2px;"><strong>SGST</strong></td>
+            
+            <td style="border-right:1px solid black;"></td>
+            <td style="border-right:1px solid black;"></td>
+            <td style="border-right:1px solid black;"></td>
+            <td style="border-right:1px solid black;"></td>
+            <td style="border-right:1px solid black;"></td>
+            <td style="border-right:1px solid black; padding:2px; text-align:right;">{{ sgst|floatformat:2 }}</td>
+        </tr>
+        <tr style="border: 0px;">
+            <td style="border-right:1px solid black;"></td>
+            <td style="border-right:1px solid black;"></td>
+            
+            <td colspan="1" style="text-align:right; border-left:1px solid black;border-right:1px solid black; padding:2px;"><strong>Round Off</strong></td>
+            
+            <td style="border-right:1px solid black;"></td>
+            <td style="border-right:1px solid black;"></td>
+            <td style="border-right:1px solid black;"></td>
+            <td style="border-right:1px solid black;"></td>
+            <td style="border-right:1px solid black;"></td>
+            <td style="border-right:1px solid black; padding:2px; text-align:right;">{{ round_off|floatformat:2 }}</td>
         </tr>
         <tr>
-            <td colspan="8" class="text-right"><strong>CGST</strong></td>
-            <td><input id="cgst-total" type="number" value="227.44" readonly></td>
-        </tr>
-        <tr>
-            <td colspan="8" class="text-right"><strong>SGST</strong></td>
-            <td><input id="sgst-total" type="number" value="227.44" readonly></td>
-        </tr>
-        <tr>
-            <td colspan="8" class="text-right"><strong>Round Off</strong></td>
-            <td><input id="total-rf" type="number" value="0.22" readonly></td>
-        </tr>
-        <tr style="border-top: 1px solid black;">
-            <td colspan="8" class="text-right"><strong>Total</strong></td>
-            <td><input id="total-with-tax" type="number" value="2982.00" style="font-weight: 600;" readonly></td>
+            <td style="border-right:1px solid black;"></td>
+            <td style="border-right:1px solid black;"></td>
+            <td colspan="1" style="text-align:right; border-left:1px solid black;border-right:1px solid black; padding:2px;"><strong>Total</strong></td>
+            
+            <td style="border-right:1px solid black;"></td>
+            <td style="border-right:1px solid black;"></td>
+            <td style="border-right:1px solid black;"></td>
+            <td style="border-right:1px solid black;"></td>
+            <td style="border-right:1px solid black;"></td>
+            <td style="border-right:1px solid black; padding:2px; text-align:right; font-weight:bold;">{{ total|floatformat:2 }}</td>
         </tr>
     </tfoot>
 </table>
-
-<script>
-    // 🔹 Update row calculation
-    function recalcRow(id) {
-        let qty = parseFloat(document.getElementById(`quantity-${id}`).value) || 0;
-        let rate = parseFloat(document.getElementById(`rate-incl-${id}`).textContent) || 0;
-        let amount = qty * rate;
-        document.getElementById(`amount-${id}`).value = amount.toFixed(2);
-        recalcTotals();
-    }
-
-    // 🔹 Recalculate totals
-    function recalcTotals() {
-        let rows = document.querySelectorAll("tbody tr");
-        let total = 0;
-        rows.forEach((row, i) => {
-            let amountInput = row.querySelector("td:last-child input");
-            total += parseFloat(amountInput.value) || 0;
-        });
-        document.getElementById("total-without-tax").value = total.toFixed(2);
-        total_change();
-    }
-
-    // 🔹 Tax + Final Total
-    function total_change() {
-        let total_wo_tax = parseFloat(document.getElementById("total-without-tax").value) || 0;
-        let cgst = total_wo_tax * 0.09;
-        let sgst = total_wo_tax * 0.09;
-        document.getElementById("cgst-total").value = cgst.toFixed(2);
-        document.getElementById("sgst-total").value = sgst.toFixed(2);
-        let total = total_wo_tax + cgst + sgst;
-        let roundOff = total - Math.floor(total);
-        document.getElementById("total-rf").value = roundOff.toFixed(2);
-        document.getElementById("total-with-tax").value = Math.floor(total).toFixed(2);
-    }
-
-</script>

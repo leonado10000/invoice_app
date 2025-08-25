@@ -1,77 +1,101 @@
-<style>
-    .tax-table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 0.9rem;
-        margin-top: -1px; /* remove double border between sections */
-    }
-
-    .tax-table th, 
-    .tax-table td {
-        border: 1px solid black;
-        padding: 6px;
-        text-align: center;
-    }
-
-    .tax-table thead th {
-        background: #f9f9f9;
-    }
-
-    .tax-table tfoot td {
-        font-weight: bold;
-    }
-
-    .tax-amount-words {
-        border: 1px solid black;
-        border-top: none;
-        padding: 8px;
-        font-size: 0.9rem;
-    }
-</style>
-
-<div class="tax-amount-words">
+<div style="border:1px solid black;border-top:none;padding:8px;">
     Amount Chargeable (in words):  
-    <strong>INR Six Thousand Eight Hundred Seventy Three Only</strong>
+    <strong>INR {{total_full_words}}</strong>
 </div>
 
-<table class="tax-table">
+<!-- A4 content width ≈ 190mm (adjust if your page margins differ) -->
+<table style="width:180mm;border-collapse:collapse;margin-top:-1px;">
     <thead>
         <tr>
-            <th rowspan="2">Taxable Value</th>
-            <th colspan="2">Central Tax</th>
-            <th colspan="2">State Tax</th>
-            <th rowspan="2">Total Tax Amount</th>
+            <!-- Col widths plan (sum = 190mm):
+                 Taxable:55  CT Rate:20  CT Amt:30  ST Rate:20  ST Amt:30  TotalTax:25 -->
+            <th rowspan="2" style="border:1px solid black;padding:6px;background:#f9f9f9;">
+                <div style="width:78.5mm;text-align:center;">Taxable Value</div>
+            </th>
+            <th colspan="2" style="border:1px solid black;padding:6px;background:#f9f9f9;">
+                <div style="width:40mm;text-align:center;">Central Tax</div>
+            </th>
+            <th colspan="2" style="border:1px solid black;padding:6px;background:#f9f9f9;">
+                <div style="width:40mm;text-align:center;">State Tax</div>
+            </th>
+            <th rowspan="2" style="border:1px solid black;padding:6px;background:#f9f9f9;">
+                <div style="width:30mm;text-align:center;">Total Tax Amount</div>
+            </th>
         </tr>
         <tr>
-            <th>Rate</th>
-            <th>Amount</th>
-            <th>Rate</th>
-            <th>Amount</th>
+            <th style="border:1px solid black;padding:6px;background:#f9f9f9;">
+                <div style="width:20mm;text-align:center;">Rate</div>
+            </th>
+            <th style="border:1px solid black;padding:6px;background:#f9f9f9;">
+                <div style="width:20mm;text-align:center;">Amount</div>
+            </th>
+            <th style="border:1px solid black;padding:6px;background:#f9f9f9;">
+                <div style="width:20mm;text-align:center;">Rate</div>
+            </th>
+            <th style="border:1px solid black;padding:6px;background:#f9f9f9;">
+                <div style="width:20mm;text-align:center;">Amount</div>
+            </th>
         </tr>
     </thead>
+
     <tbody>
+        {% for key, value in tax_list.items %}
         <tr>
-            <td>4206.97</td>
-            <td>9%</td>
-            <td>378.63</td>
-            <td>9%</td>
-            <td>378.63</td>
-            <td>757.26</td>
+            <td style="border:1px solid black;padding:6px;">
+                <div style="width:78.5mm;text-align:right;">{{ value.taxable_value|floatformat:2 }}</div>
+            </td>
+            <td style="border:1px solid black;padding:6px;">
+                <div style="width:20mm;text-align:center;white-space:nowrap;">{{ key }}%</div>
+            </td>
+            <td style="border:1px solid black;padding:6px;">
+                <div style="width:20mm;text-align:right;">{{ value.taxed_amount|floatformat:2 }}</div>
+            </td>
+            <td style="border:1px solid black;padding:6px;">
+                <div style="width:20mm;text-align:center;white-space:nowrap;">{{ key }}%</div>
+            </td>
+            <td style="border:1px solid black;padding:6px;">
+                <div style="width:20mm;text-align:right;">{{ value.taxed_amount|floatformat:2 }}</div>
+            </td>
+            <td style="border:1px solid black;padding:6px;">
+                <div style="width:30mm;text-align:right;">{{ value.total_taxed|floatformat:2 }}</div>
+            </td>
         </tr>
+        {% endfor %}
     </tbody>
+
     <tfoot>
         <tr>
-            <td>Total: 4206.97</td>
-            <td></td>
-            <td>378.63</td>
-            <td></td>
-            <td>378.63</td>
-            <td>757.26</td>
+            <td style="border:1px solid black;padding:6px;">
+                <div style="width:78.5mm;font-weight:bold;text-align:right;">
+                    Total: {{ total_wo_tax|floatformat:2 }}
+                </div>
+            </td>
+            <td style="border:1px solid black;padding:6px;">
+                <div style="width:20mm;">&nbsp;</div>
+            </td>
+            <td style="border:1px solid black;padding:6px;">
+                <div style="width:20mm;font-weight:bold;text-align:right;">
+                    {{ cgst|floatformat:2 }}
+                </div>
+            </td>
+            <td style="border:1px solid black;padding:6px;">
+                <div style="width:20mm;">&nbsp;</div>
+            </td>
+            <td style="border:1px solid black;padding:6px;">
+                <div style="width:20mm;font-weight:bold;text-align:right;">
+                    {{ sgst|floatformat:2 }}
+                </div>
+            </td>
+            <td style="border:1px solid black;padding:6px;">
+                <div style="width:30mm;font-weight:bold;text-align:right;">
+                    {{ total_tax|floatformat:2 }}
+                </div>
+            </td>
         </tr>
     </tfoot>
 </table>
 
-<div class="tax-amount-words">
+<div style="border:1px solid black;border-top:none;padding:8px;">
     Tax Amount (in words):  
-    <strong>Four Thousand Nine Hundred Sixty Four Only</strong>
+    <strong>INR {{ total_tax_amount_words }}</strong>
 </div>

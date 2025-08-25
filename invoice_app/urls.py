@@ -16,11 +16,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.conf.urls.static import static
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from invoices.models import Invoice
+from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
 
 @login_required(login_url="/login")
 def dashboard(request):
@@ -29,8 +31,24 @@ def dashboard(request):
         "invoices": invoices
     })
 
+def logout_page(request):
+    logout(request)  # logs out the user
+    return redirect('login') 
+
 def login_page(request):
-    return render(request, 'login_page.html')
+    if request.method == "POST":
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            login(request, user)  # logs the user in
+            return redirect('dashboard')  # replace with your post-login page
+        else:
+            messages.error(request, "Invalid Operator ID or Access Key")
+
+    return render(request, 'login_page.html')  
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -40,5 +58,6 @@ urlpatterns = [
     path("customer/",include("customer.urls")),
     path("", dashboard, name='dashboard'),
     path("login/", login_page, name='login'),
+    path('logout/', logout_page, name='logout'),
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

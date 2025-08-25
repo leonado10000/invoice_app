@@ -1,12 +1,13 @@
-<table border="1" cellspacing="0" cellpadding="6" width="100%">
+<table cellspacing="0" cellpadding="6" width="100%" style="border: .5px sild black;">
   <tr>
     <!-- Left column -->
     <td width="50%" valign="top">
       <p><b>Company's Bank Details</b></p>
       <p>
-        Bank Name: IDFC FIRST BANK <br/>
-        A/c No.: 10217596558 <br/>
-        Branch &amp; IFS Code: DABWALI ROAD, SIRSA &amp; IDFB0021064
+        Bank Name: {{invoice.company.bank_name}} <br/>
+        A/c No.: {{invoice.company.bank_account}} <br/>
+        Branch : {{invoice.company.bank_branch}} <br> 
+        IFS Code: {{invoice.company.ifsc}}
       </p>
       <p><b>Declaration</b></p>
       <p>
@@ -17,7 +18,7 @@
 
     <!-- Right column -->
     <td width="50%" valign="top" align="right">
-      <p>for OM ENTERPRISES</p>
+      <p>for {{invoice.company.name|upper}}</p>
       <br/><br/><br/>
       <p><b>Authorised Signatory</b></p>
     </td>

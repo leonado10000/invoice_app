@@ -1,4 +1,5 @@
 import json
+import math
 import datetime
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect, HttpResponse
@@ -92,10 +93,9 @@ def invoice_pos(request, pk):
             "gst_rate": item.gst_rate, 
             "rate_incl": item.rate_incl, 
             "unit": item.unit
-        } for item in Item.objects.all()
+        } for item in Item.objects.filter(user=request.user)
     ]
     buyers = Customer.objects.filter(is_active=True)
-    print(invoice)
     return render(request, "invoice/pos.html", {
         "data":d,
         "buyers": buyers,
@@ -112,12 +112,51 @@ def invoice_pos(request, pk):
 
 @login_required(login_url="/login")
 def invoice_detail(request, pk):
-    invoice = Invoice.objects.get(pk=pk, owner=request.user)
-    items = InvoiceItem.objects.filter(invoice=invoice).select_related('item')
-    return render(request, 'invoice/main.html', {
+    invoice = get_object_or_404(Invoice, pk=pk, owner=request.user)
+
+    items = invoice.items.select_related('item').all()
+    total_wo_tax = 0
+    cgst = 0
+    sgst = 0
+    tax_list = {}
+
+    # Row calculations
+    for i, it in enumerate(items, start=1):
+        qty = float(it.quantity or 0)
+        total_of_item_wo_tax = float(it.total_without_tax or 0)
+        total_wo_tax += total_of_item_wo_tax 
+
+        rate = float(it.rate_incl_tax or 0)
+        it.amount = qty * rate
+        tax_list[int(it.gst_rate//2)] = {
+            "taxable_value":tax_list.get(int(it.gst_rate//2),{"taxable_value":0})["taxable_value"] + total_of_item_wo_tax,
+            "taxed_amount":tax_list.get(int(it.gst_rate//2),{"taxed_amount":0})["taxed_amount"] + (it.amount - total_of_item_wo_tax)/2,
+            "total_taxed":tax_list.get(int(it.gst_rate//2),{"total_taxed":0})["total_taxed"] + (it.amount - total_of_item_wo_tax)
+        }
+
+        cgst += (it.amount - total_of_item_wo_tax)/2
+    
+    sgst = cgst
+    total = total_wo_tax + cgst + sgst
+    round_off = total - math.floor(total)
+    total_with_tax = math.floor(total)
+    context = {
         'invoice': invoice,
-        "items": items
-    })
+        'items': items,
+        'total_wo_tax': total_wo_tax,
+        'total_tax_amount_words':amount_to_words(int(cgst*2)),
+        'cgst': cgst,
+        'sgst': sgst,
+        'total_tax': cgst*2,
+        'round_off': round_off,
+        'total': total_with_tax,
+        'total_full':total,
+        'total_full_words':amount_to_words(total),
+        'pdf': True,
+        'tax_list':tax_list
+    }
+    items = InvoiceItem.objects.filter(invoice=invoice).select_related('item')
+    return render(request, 'invoice/main.html', context)
 
 
 @login_required(login_url="/login")
@@ -275,15 +314,15 @@ def invoice_pdf(request, pk):
         tax_list[int(it.gst_rate//2)] = {
             "taxable_value":tax_list.get(int(it.gst_rate//2),{"taxable_value":0})["taxable_value"] + total_of_item_wo_tax,
             "taxed_amount":tax_list.get(int(it.gst_rate//2),{"taxed_amount":0})["taxed_amount"] + (it.amount - total_of_item_wo_tax)/2,
-            "total_taxed":tax_list.get(int(it.gst_rate//2),{"total_taxed":0})["total_taxed"] + it.amount
+            "total_taxed":tax_list.get(int(it.gst_rate//2),{"total_taxed":0})["total_taxed"] + (it.amount - total_of_item_wo_tax)
         }
 
         cgst += (it.amount - total_of_item_wo_tax)/2
     
     sgst = cgst
     total = total_wo_tax + cgst + sgst
-    round_off = round(total) - total
-    total_with_tax = round(total)
+    round_off = total - math.floor(total)
+    total_with_tax = math.floor(total)
     context = {
         'invoice': invoice,
         'items': items,
@@ -291,6 +330,7 @@ def invoice_pdf(request, pk):
         'total_tax_amount_words':amount_to_words(int(cgst*2)),
         'cgst': cgst,
         'sgst': sgst,
+        'total_tax': cgst*2,
         'round_off': round_off,
         'total': total_with_tax,
         'total_full':total,

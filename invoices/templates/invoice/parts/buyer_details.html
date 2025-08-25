@@ -1,60 +1,46 @@
-<style>
-    .invoice-section {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        border: 1px solid black;
-        border-bottom: none; /* so next section touches it */
-    }
+<table style="width:100%; border:1px solid black; border-collapse: collapse; ">
+  <tr>
+    <!-- LEFT COLUMN -->
+    <td style="width:50%; border-right:1px solid black; vertical-align:top; padding:0;">
+      <table style="width:100%; border-collapse: collapse; ">
+        <tr>
+          <td style="border-bottom:1px solid black; padding: 3px;">
+            <strong>Buyer</strong><br>{{ invoice.customer.name }}, {{ invoice.customer.address }} 
+          </td>
+        </tr>
+        <tr>
+          <td style="border-bottom:1px solid black; padding:3px;">
+            <strong>State Name</strong><br>{{ invoice.customer.state }}, Code: {{ invoice.customer.state_code }}
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:3px;">
+            <strong>Place of Supply</strong><br>{{invoice.customer.state}}
+          </td>
+        </tr>
+      </table>
+    </td>
 
-    /* Last section should close the box */
-    .invoice-section.last {
-        border-bottom: 1px solid black;
-    }
-
-    .invoice-section .left,
-    .invoice-section .right {
-        border-right: 1px solid black;
-    }
-
-    .invoice-section .right {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-    }
-
-    .invoice-section .right div,
-    .invoice-section .left div {
-        border: 1px solid black;
-        border-left: none;
-        border-top: none;
-        padding: 6px;
-        font-size: 0.9rem;
-    }
-
-    .invoice-section input {
-        width: 100%;
-        border: none;
-        outline: none;
-        font-size: 0.9rem;
-    }
-
-    .invoice-section strong {
-        display: block;
-        margin-bottom: 2px;
-    }
-</style>
-<div class="invoice-section last">
-    <!-- LEFT -->
-    <div class="left">
-        <div><strong>Buyer</strong><input type="text" value="{{ invoice.customer.name }}"></div>
-        <div><strong>State Name</strong><input type="text" value="{{ invoice.customer.state }}, Code: {{ invoice.customer.state_code }}"></div>
-        <div><strong>Place of Supply</strong><input type="text" value="Haryana"></div>
-    </div>
-
-    <!-- RIGHT -->
-    <div class="right">
-        <div><strong>Despatch Document No.</strong><input type="text" value="<Enter Value>"></div>
-        <div><strong>Delivery Note Date</strong><input type="text" value="<Enter Value>"></div>
-        <div><strong>Despatched through</strong><input type="text" value="<Enter Value>"></div>
-        <div><strong>Destination</strong><input type="text" value="<Enter Value>"></div>
-    </div>
-</div>
+    <!-- RIGHT COLUMN -->
+    <td style="width:50%; vertical-align:top; padding:0;">
+      <table style="width:100%; border-collapse: collapse; ">
+        <tr>
+          <td style="border-bottom:1px solid black; border-right:1px solid black; padding:7px;">
+            <strong>Despatch Document No.</strong><br>{{invoice.despatch_doc_no}}
+          </td>
+          <td style="border-bottom:1px solid black; padding:7px;">
+            <strong>Delivery Note Date</strong><br>{{invoice.delivery_note_date|date:'Y-m-d'}}
+          </td>
+        </tr>
+        <tr>
+          <td style="border-bottom:1px solid black; border-right:1px solid black; padding:10px;">
+            <strong>Despatched through</strong><br>{{invoice.despatched_through}}
+          </td>
+          <td style="border-bottom:1px solid black; padding:10px;">
+            <strong>Destination</strong><br>{{invoice.destination_other}}
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
