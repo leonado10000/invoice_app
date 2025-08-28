@@ -11,6 +11,9 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,14 +29,14 @@ SECRET_KEY = "django-insecure-uzii!8e-&=qn3*qb8eqx+64#q1*cpq!-o8g*g1e8r#bs#w!=(p
 DEBUG = True
 
 ALLOWED_HOSTS = ['invoice-portal-leonado10000.vercel.app','.vercel.app','192.168.0.187','*','172.20.10.7','192.168.208.13']
-POSTGRES_URL="postgresql://neondb_owner:npg_wfuaMD0N1tPO@ep-proud-breeze-adze7wep-pooler.c-2.us-east-1.aws.neon.tech/neondb?sslmode=require"
-POSTGRES_URL_NON_POOLING="postgresql://neondb_owner:npg_wfuaMD0N1tPO@ep-proud-breeze-adze7wep.c-2.us-east-1.aws.neon.tech/neondb?sslmode=require"
-POSTGRES_USER="neondb_owner"
-POSTGRES_HOST="ep-proud-breeze-adze7wep-pooler.c-2.us-east-1.aws.neon.tech"
-POSTGRES_PASSWORD="npg_wfuaMD0N1tPO"
-POSTGRES_DATABASE="neondb"
-POSTGRES_URL_NO_SSL="postgresql://neondb_owner:npg_wfuaMD0N1tPO@ep-proud-breeze-adze7wep-pooler.c-2.us-east-1.aws.neon.tech/neondb"
-POSTGRES_PRISMA_URL="postgresql://neondb_owner:npg_wfuaMD0N1tPO@ep-proud-breeze-adze7wep-pooler.c-2.us-east-1.aws.neon.tech/neondb?connect_timeout=15&sslmode=require"
+POSTGRES_URL=os.getenv('POSTGRES_URL')
+POSTGRES_URL_NON_POOLING=os.getenv('POSTGRES_URL_NON_POOLING')
+POSTGRES_USER=os.getenv('POSTGRES_USER')
+POSTGRES_HOST=os.getenv('POSTGRES_HOST')
+POSTGRES_PASSWORD=os.getenv('POSTGRES_PASSWORD')
+POSTGRES_DATABASE=os.getenv('POSTGRES_DATABASE')
+POSTGRES_URL_NO_SSL=os.getenv('POSTGRES_URL_NO_SSL')
+POSTGRES_PRISMA_URL=os.getenv('POSTGRES_PRISMA_URL')
 
 # Application definition
 

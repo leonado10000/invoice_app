@@ -6,3 +6,4 @@ sqlparse==0.4.3
 tzdata==2022.7
 psycopg2-binary~=2.9.3
 xhtml2pdf>=0.2.8
+python-dotenv
